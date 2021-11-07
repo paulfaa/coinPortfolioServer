@@ -6,15 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+
 @RestController
 public class CoinController {
 
     @Autowired
     private AllCoins allCoins;
-
-    //first check server db if coin already exists
-    //if so check date, if it's recent enough return these values
-    //else make api call and return those values
 
     private static final String template = "Hello, %s!";
     //private final int counter;
@@ -25,11 +24,14 @@ public class CoinController {
     }
 
     @GetMapping("/getRate")
-    public Coin coin(@RequestParam(value = "coinName", defaultValue = "noNameSelected!") CurrenciesEnum currency) {
+    public int coin(@RequestParam(value = "coinName", defaultValue = "noNameSelected!") CurrenciesEnum currency) {
         if (allCoins.checkIfListContainsCoin("coinName")){
-            //allCoins.getCoin("coinName").getRate
+            HashMap<CurrenciesEnum, Rate> rates = allCoins.getCoin("coinName").currencyValues;
+            if (rates.containsKey(currency) && rates.get(currency).getLocalDateTime() < LocalDateTime.now() ){  //check if rate was already updates in past hour
+                return rates.get(currency).getValue();
+            }
         }
-        return new Coin(1, "coinName");
+        return coinmarketapi.get(coinName);
     }
 
 }

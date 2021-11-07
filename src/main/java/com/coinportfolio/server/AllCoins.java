@@ -1,10 +1,15 @@
 package com.coinportfolio.server;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@Component
+@EnableAutoConfiguration
 public class AllCoins {
-    //
+
     private ArrayList<Coin> allCoins;
     
     public boolean checkIfListContainsCoin(String coinName){

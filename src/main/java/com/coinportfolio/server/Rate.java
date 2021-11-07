@@ -2,19 +2,20 @@ package com.coinportfolio.server;
 
 import com.coinportfolio.server.enums.CurrenciesEnum;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Rate {
-    private Date date;
+    CurrenciesEnum currency; //might not be needed
     private int value;
-    CurrenciesEnum currency;
+    private LocalDateTime localDateTime;
 
-    public Date getDate() {
-        return date;
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(LocalDateTime date) {
+        this.localDateTime = date;
     }
 
     public int getValue() {

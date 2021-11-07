@@ -10,12 +10,12 @@ public class Coin {
     private int id;
     private String name;
     // store value for this particular coin in different currencies
-    private HashMap<CurrenciesEnum, Rate> currencyValues = new HashMap<CurrenciesEnum, Rate>();
+    public HashMap<CurrenciesEnum, Rate> currencyValues = new HashMap<CurrenciesEnum, Rate>();
 
     public Coin(int id, String name) {
         this.id = id;
         this.name = name;
-        //this.currencyValues = currencyValues;
+        this.currencyValues = currencyValues;
     }
 
     public int getId() {
@@ -49,4 +49,5 @@ public class Coin {
         Coin coin = (Coin) o;
         return name.equals(coin.name);
     }
+
 }
