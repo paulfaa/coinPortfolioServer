@@ -1,5 +1,7 @@
 package com.coinportfolio.server;
 
+import com.coinportfolio.server.enums.CurrenciesEnum;
+
 import java.util.Date;
 
 public class Rate {

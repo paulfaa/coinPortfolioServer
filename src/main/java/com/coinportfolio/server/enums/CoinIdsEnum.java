@@ -1,4 +1,4 @@
-package com.coinportfolio.server;
+package com.coinportfolio.server.enums;
 
 public enum CoinIdsEnum {
     //enum to map name to  coinmarket holding ids
