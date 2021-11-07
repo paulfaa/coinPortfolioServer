@@ -4,11 +4,16 @@ import com.coinportfolio.server.enums.CoinIdsEnum;
 
 public class CoinNameToCoinmarketId {
 
-    public int convertName(String coinName){
-        return CoinIdsEnum.valueOf(coinName).ordinal();
+    public int convertNameToInt(String coinName){
+        try{
+            return CoinIdsEnum.valueOf(coinName).getId();
+        }
+        catch (Exception e){
+            return 0;
+        }
     }
 
-    public String convertId(int id){
+    public String convertIdToName(int id){
         for (CoinIdsEnum e : CoinIdsEnum.values()) {
             if (e.getId() == (id)) {
                 return e.toString();

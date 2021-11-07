@@ -15,9 +15,6 @@ public class CoinController {
     @Autowired
     private AllCoins allCoins;
 
-    private static final String template = "Hello, %s!";
-    //private final int counter;
-
     @GetMapping("/getCoin")
     public Coin coin(@RequestParam(value = "id", defaultValue = "1") String name) {
         return new Coin(1, "coinName");
@@ -27,11 +24,12 @@ public class CoinController {
     public int coin(@RequestParam(value = "coinName", defaultValue = "noNameSelected!") CurrenciesEnum currency) {
         if (allCoins.checkIfListContainsCoin("coinName")){
             HashMap<CurrenciesEnum, Rate> rates = allCoins.getCoin("coinName").currencyValues;
-            if (rates.containsKey(currency) && rates.get(currency).getLocalDateTime() < LocalDateTime.now() ){  //check if rate was already updates in past hour
+            if (rates.containsKey(currency) && LocalDateTime.now().getHour() <= rates.get(currency).getLocalDateTime().getHour() ){  //check if rate was already updated in past hour
                 return rates.get(currency).getValue();
             }
         }
-        return coinmarketapi.get(coinName);
+        //return coinmarketapi.get(coinName);
+        return 1;
     }
 
 }
