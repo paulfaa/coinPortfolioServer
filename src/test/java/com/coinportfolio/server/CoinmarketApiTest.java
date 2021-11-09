@@ -18,9 +18,9 @@ public class CoinmarketApiTest {
     @Autowired
     private CoinmarketApi coinmarketApi;
 
-//    @Test
-//    public void testGetCoinmarketRateForCoin(){
-//        assertEquals(coinmarketApi.getCoinmarketRateForCoin("bitcoin"), "1234");
-//    }
+    @Test
+    public void testGetCoinmarketRateForCoin(){
+        assertEquals("1234", coinmarketApi.getCoinmarketRateForCoin("bitcoin"));
+    }
 
 }
