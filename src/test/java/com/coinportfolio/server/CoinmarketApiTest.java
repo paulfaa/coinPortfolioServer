@@ -1,5 +1,6 @@
 package com.coinportfolio.server;
 
+import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
 import com.coinportfolio.server.utils.CoinmarketApi;
 import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
@@ -15,12 +16,11 @@ public class CoinmarketApiTest {
     private int port;
 
     @Autowired
-    private TestRestTemplate restTemplate;
     private CoinmarketApi coinmarketApi;
 
-    @Test
-    public void testGetCoinmarketRateForCoin(){
-        assertEquals(coinmarketApi.getCoinmarketRateForCoin("bitcoin"), "1234");
-    }
+//    @Test
+//    public void testGetCoinmarketRateForCoin(){
+//        assertEquals(coinmarketApi.getCoinmarketRateForCoin("bitcoin"), "1234");
+//    }
 
 }
