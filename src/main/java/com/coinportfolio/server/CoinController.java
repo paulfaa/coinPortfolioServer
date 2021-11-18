@@ -1,10 +1,15 @@
 package com.coinportfolio.server;
 
 import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.models.Coin;
+import com.coinportfolio.server.models.Rate;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -15,6 +20,11 @@ public class CoinController {
 
     @Autowired
     private AllCoins allCoins;
+
+    RestTemplate restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
+        request.getHeaders().add("X-CMC_PRO_API_KEY", "047f0335-8f37-4cb3-a596-222dac0321a6");
+        return execution.execute(request, body);
+    })).build();
 
     @GetMapping("/getCoin")
     public Coin coin(@RequestParam("id") int id) {
@@ -37,4 +47,9 @@ public class CoinController {
         return 1;
     }
 
+    @GetMapping("/restTemplate")
+    public String getFromUrl() throws JsonProcessingException {
+        return restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
+                String.class);
+    }
 }

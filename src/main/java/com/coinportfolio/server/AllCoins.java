@@ -1,10 +1,10 @@
 package com.coinportfolio.server;
 
+import com.coinportfolio.server.models.Coin;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @Component
 @EnableAutoConfiguration

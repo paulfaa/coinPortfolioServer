@@ -12,6 +12,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @SpringBootApplication
 public class ServerApplication {
 
+	private String testApiKey = "047f0335-8f37-4cb3-a596-222dac0321a6";
+
 	public static void main(String[] args) {
 		SpringApplication.run(ServerApplication.class, args);
 	}
@@ -26,8 +28,10 @@ public class ServerApplication {
 		WebClient client = WebClient.builder()
 				.baseUrl("sandbox-api.coinmarketcap.com")
 				.defaultCookie("cookieKey", "cookieValue")
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) //need to set api key in header
-				.build();
+				.defaultHeaders(httpHeaders -> {
+					//httpHeaders.set("X-CMC_PRO_API_KEY", testApiKey);
+					httpHeaders.add("X-CMC_PRO_API_KEY", testApiKey);
+				}).build();
 		return client;
 	}
 }

@@ -1,9 +1,8 @@
-package com.coinportfolio.server;
+package com.coinportfolio.server.models;
 
 import com.coinportfolio.server.enums.CurrenciesEnum;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class Coin {
 
