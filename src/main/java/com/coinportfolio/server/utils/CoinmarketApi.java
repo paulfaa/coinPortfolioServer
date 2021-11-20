@@ -1,5 +1,6 @@
 package com.coinportfolio.server.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -8,12 +9,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
 import java.util.Locale;
+import java.util.Objects;
 
 @Service
 public class CoinmarketApi {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private static RestTemplate restTemplate;
 
     private String testUrl = "sandbox-api.coinmarketcap.com";
     private String prodUrl = "pro-api.coinmarketcap.com";
@@ -36,14 +38,20 @@ public class CoinmarketApi {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public String getCoinmarketRateForCoin(String coinName) {
+    public static long getCoinmarketRateForCoin(String coinName) throws JsonProcessingException {
         int coinId = CoinNameToCoinmarketId.convertNameToInt(coinName.toUpperCase(Locale.ROOT));
-        String response =  localApiClient
-                .get()
-                .uri("/v1/cryptocurrency/quotes/latest?id=" + coinId)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block(REQUEST_TIMEOUT);
-        return response; //returning null
+        return Long.parseLong(Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId,
+                String.class)));
+    }
+
+    public String getFromUrl() throws JsonProcessingException {
+        return restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
+                String.class);
+    }
+
+    public int getPriceFromResponse(String apiResponse){
+        //might be easier to just define request better
+        //apiResponse =
+        return 0;
     }
 }

@@ -37,7 +37,7 @@ public class Coin {
         currencyValues.put(currencyTicker, rate);
     }
 
-    public int getValue(CurrenciesEnum currencyTicker){
+    public long getValue(CurrenciesEnum currencyTicker){
         return currencyValues.get(currencyTicker).getValue();
     }
 

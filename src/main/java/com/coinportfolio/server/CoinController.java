@@ -3,6 +3,7 @@ package com.coinportfolio.server;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
+import com.coinportfolio.server.utils.CoinmarketApi;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -21,6 +22,7 @@ public class CoinController {
     @Autowired
     private AllCoins allCoins;
 
+    //move this to coinmarketapi class
     RestTemplate restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
         request.getHeaders().add("X-CMC_PRO_API_KEY", "047f0335-8f37-4cb3-a596-222dac0321a6");
         return execution.execute(request, body);
@@ -31,8 +33,9 @@ public class CoinController {
         return new Coin(id, "coinName");
     }
 
+    //takes in coin name and the users currency
     @GetMapping("/getRate")
-    public int coin(@RequestParam Map<String, CurrenciesEnum> query) {
+    public long coin(@RequestParam Map<String, CurrenciesEnum> query) {
         //stringToEnumConverterFactory should automatically convert string param
 
         if (allCoins.checkIfListContainsCoin("coinName")){
@@ -44,12 +47,29 @@ public class CoinController {
         }
         //todo: start interacting with api
         //return coinmarketapi.get(coinName);
+        restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
+                String.class);
         return 1;
+    }
+
+    @GetMapping("/getRate")
+    public Rate rate(@RequestParam Map<String, CurrenciesEnum> query) throws JsonProcessingException {
+        //stringToEnumConverterFactory should automatically convert string param
+
+        if (allCoins.checkIfListContainsCoin("coinName")){
+            HashMap<CurrenciesEnum, Rate> rates = allCoins.getCoin("coinName").currencyValues;
+            CurrenciesEnum currency = query.get(query.keySet().iterator().next());
+            if (rates.containsKey(currency) && LocalDateTime.now().getHour() <= rates.get(currency).getLocalDateTime().getHour() ){  //check if rate was already updated in past hour
+                return rates.get(currency);
+            }
+        }
+        return new Rate(query.get(query.keySet().iterator().next()), CoinmarketApi.getCoinmarketRateForCoin("coinName"), LocalDateTime.now());
     }
 
     @GetMapping("/restTemplate")
     public String getFromUrl() throws JsonProcessingException {
-        return restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
+        String s = restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
                 String.class);
+        return s;
     }
 }

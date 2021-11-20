@@ -7,8 +7,14 @@ import java.util.Date;
 
 public class Rate {
     CurrenciesEnum currency; //might not be needed
-    private int value;
+    private long value;
     private LocalDateTime localDateTime;
+
+    public Rate(CurrenciesEnum currency, long value, LocalDateTime localDateTime) {
+        this.currency = currency;
+        this.value = value;
+        this.localDateTime = localDateTime;
+    }
 
     public LocalDateTime getLocalDateTime() {
         return localDateTime;
@@ -18,7 +24,7 @@ public class Rate {
         this.localDateTime = date;
     }
 
-    public int getValue() {
+    public long getValue() {
         return value;
     }
 

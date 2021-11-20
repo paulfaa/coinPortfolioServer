@@ -33,6 +33,7 @@ public class CoinControllerTest {
         //assertEquals(this.restTemplate.getForObject("http://localhost:" + port + "/getCoin" + "?id=1", String.class), c);
         assertEquals(c, this.restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
                 String.class));
+
         //need to write class to parse json
 
     }
