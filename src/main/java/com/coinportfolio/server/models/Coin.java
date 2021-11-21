@@ -9,7 +9,7 @@ public class Coin {
     private int id;
     private String name;
     // store value for this particular coin in different currencies
-    public HashMap<CurrenciesEnum, Rate> currencyValues = new HashMap<CurrenciesEnum, Rate>();
+    private HashMap<CurrenciesEnum, Rate> currencyValues = new HashMap<CurrenciesEnum, Rate>();
 
     public Coin(int id, String name) {
         this.id = id;
@@ -39,6 +39,14 @@ public class Coin {
 
     public long getValue(CurrenciesEnum currencyTicker){
         return currencyValues.get(currencyTicker).getValue();
+    }
+
+    public HashMap<CurrenciesEnum, Rate> getCurrencyValues(){
+        return currencyValues;
+    }
+
+    public void setCurrencyValues(CurrenciesEnum currenciesEnum, Rate rate){
+        currencyValues.put(currenciesEnum, rate);
     }
 
     @Override

@@ -29,4 +29,8 @@ public class AllCoins {
         }
         return null;
     }
+
+    public void addCoin(Coin coin){
+        allCoins.add(coin);
+    }
 }
