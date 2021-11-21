@@ -4,7 +4,7 @@ import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
-import com.coinportfolio.server.utils.CoinmarketApi;
+import com.coinportfolio.server.service.CoinService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -21,9 +21,9 @@ import java.util.Map;
 public class CoinController {
 
     @Autowired
-    private AllCoins allCoins;
+    CoinService coinService;
 
-    //move this to coinmarketapi class
+    //move this to coinService class
     RestTemplate restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
         request.getHeaders().add("X-CMC_PRO_API_KEY", "047f0335-8f37-4cb3-a596-222dac0321a6");
         return execution.execute(request, body);
@@ -34,8 +34,8 @@ public class CoinController {
         return new Coin(id, "coinName");
     }
 
-    //request params are coin name and the users currency
-    @GetMapping("/getRate")
+
+    /*@GetMapping("/getRate")
     public long coin(@RequestParam Map<String, CurrenciesEnum> query) {
         //stringToEnumConverterFactory should automatically convert string param
 
@@ -51,28 +51,13 @@ public class CoinController {
         restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
                 String.class);
         return 1;
-    }
+    }*/
 
+    //request params are coin name and the users currency
     @GetMapping("/getRate")
     public Rate rate(@RequestParam Map<String, CurrenciesEnum> query) throws JsonProcessingException {
         //stringToEnumConverterFactory should automatically convert string param
-        CurrenciesEnum currency = query.get(query.keySet().iterator().next());
-        boolean coinExists = false;
-        if (allCoins.checkIfListContainsCoin("coinName")){
-            coinExists = true;
-            HashMap<CurrenciesEnum, Rate> rates = allCoins.getCoin("coinName").getCurrencyValues();
-            if (rates.containsKey(currency) && LocalDateTime.now().getHour() <= rates.get(currency).getLocalDateTime().getHour() ){
-                //if recent rate for this currency already exists, return it
-                return rates.get(currency);
-            }
-        }
-        if (coinExists == false){
-            allCoins.addCoin(new Coin(CoinNameToCoinmarketId.convertNameToInt("coinName"), "CoinName"));
-        }
-        Rate rate = new Rate(query.get(query.keySet().iterator().next()), CoinmarketApi.getCoinmarketRateForCoin("coinName"), LocalDateTime.now());
-        //update with new rate
-        allCoins.getCoin("coinName").setCurrencyValues(currency, rate);
-        return rate;
+        return coinService.processRequestParams(query);
     }
 
     @GetMapping("/restTemplate")
