@@ -23,12 +23,6 @@ public class CoinController {
     @Autowired
     CoinService coinService;
 
-    //move this to coinService class
-    RestTemplate restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
-        request.getHeaders().add("X-CMC_PRO_API_KEY", "047f0335-8f37-4cb3-a596-222dac0321a6");
-        return execution.execute(request, body);
-    })).build();
-
     @GetMapping("/getCoin")
     public Coin coin(@RequestParam("id") int id) {
         return new Coin(id, "coinName");
@@ -62,8 +56,6 @@ public class CoinController {
 
     @GetMapping("/restTemplate")
     public String getFromUrl() throws JsonProcessingException {
-        String s = restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
-                String.class);
-        return s;
+        return coinService.getFromUrl();
     }
 }

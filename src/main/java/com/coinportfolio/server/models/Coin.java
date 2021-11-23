@@ -11,7 +11,7 @@ public class Coin {
     // store value for this particular coin in different currencies
     private HashMap<CurrenciesEnum, Rate> currencyValues = new HashMap<CurrenciesEnum, Rate>();
 
-    public Coin(int id, String name) {
+    public Coin(int id, String name) { //missing currencyValues in constructor
         this.id = id;
         this.name = name;
         this.currencyValues = currencyValues;

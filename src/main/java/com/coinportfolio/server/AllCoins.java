@@ -10,21 +10,36 @@ import java.util.ArrayList;
 @EnableAutoConfiguration
 public class AllCoins {
 
-    private ArrayList<Coin> allCoins;
+    private ArrayList<Coin> allCoins = new ArrayList<>();
     
     public boolean checkIfListContainsCoin(String coinName){
-        for (Coin coin: allCoins) {
-            if (coin.getName() == coinName){
-                return true;
+        if (allCoins != null){
+            for (Coin coin: allCoins) {
+                if (coin.getName().equalsIgnoreCase(coinName)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkIfListContainsCoin(int coinId){
+        if (allCoins != null){
+            for (Coin coin: allCoins) {
+                if (coin.getId() == coinId){
+                    return true;
+                }
             }
         }
         return false;
     }
 
     public Coin getCoin(String coinName){
-        for (Coin coin: allCoins) {
-            if (coin.getName() == coinName){
-                return coin;
+        if (allCoins != null) {
+            for (Coin coin : allCoins) {
+                if (coin.getName().equalsIgnoreCase(coinName)) {
+                    return coin;
+                }
             }
         }
         return null;

@@ -22,8 +22,10 @@ import java.util.Objects;
 @Service
 public class CoinService {
 
-    @Autowired
-    private static RestTemplate restTemplate;
+    private static RestTemplate restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
+        request.getHeaders().add("X-CMC_PRO_API_KEY", "047f0335-8f37-4cb3-a596-222dac0321a6");
+        return execution.execute(request, body);
+    })).build();
 
     @Autowired
     private AllCoins allCoins;
@@ -46,24 +48,24 @@ public class CoinService {
     //request.addHeader("X-CMC_PRO_API_KEY", testApiKey);
 
     public void RestService(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplate = restTemplateBuilder.build();
+        restTemplate = restTemplateBuilder.build();
     }
-
-    //need to write method to parse json
 
     public Rate processRequestParams(Map<String, CurrenciesEnum> query) throws JsonProcessingException {
         String requestedCoin = query.keySet().stream().findFirst().get();
         int coinId = CoinNameToCoinmarketId.convertNameToInt(requestedCoin);
-        if (allCoins.checkIfListContainsCoin(requestedCoin)){
+        if (!allCoins.checkIfListContainsCoin(requestedCoin)){
             allCoins.addCoin(new Coin(coinId, requestedCoin));
         }
         CurrenciesEnum currency = query.values().stream().findFirst().get();
-        HashMap<CurrenciesEnum, Rate> rates = allCoins.getCoin("coinName").getCurrencyValues();
+        Coin c = allCoins.getCoin(requestedCoin);
+        System.out.println(c);
+        HashMap<CurrenciesEnum, Rate> rates = allCoins.getCoin(requestedCoin).getCurrencyValues(); //need null check here
         if (rates.containsKey(currency) && LocalDateTime.now().getHour() <= rates.get(currency).getLocalDateTime().getHour() ){
             //if recent rate for this currency already exists, return it
             return rates.get(currency);
         }
-        Rate rate = new Rate(currency, CoinService.getCoinmarketRateForCoin(coinId), LocalDateTime.now());
+        Rate rate = new Rate(currency, getCoinmarketRateForCoin(coinId), LocalDateTime.now());
         //update with new rate
         allCoins.getCoin("coinName").setCurrencyValues(currency, rate);
         return rate;
@@ -75,7 +77,7 @@ public class CoinService {
                 String.class)));
     }
 
-    public static long getCoinmarketRateForCoin(int coinId) throws JsonProcessingException {
+    public static long getCoinmarketRateForCoin(int coinId) throws JsonProcessingException {  //resttemplate is null here
         return Long.parseLong(Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId,
                 String.class)));
     }
@@ -85,6 +87,7 @@ public class CoinService {
                 String.class);
     }
 
+    //method to parse json
     public int getPriceFromResponse(String apiResponse){
         //might be easier to just define request better
         //apiResponse =
