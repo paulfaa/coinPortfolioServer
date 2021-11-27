@@ -4,6 +4,7 @@ import com.coinportfolio.server.enums.CoinIdsEnum;
 
 public final class CoinNameToCoinmarketId {
 
+    //return 0 for invalid
     public static int convertNameToInt(String coinName){
         try{
             return CoinIdsEnum.valueOf(coinName).getId();
@@ -13,6 +14,7 @@ public final class CoinNameToCoinmarketId {
         }
     }
 
+    //return null for invalid
     public static String convertIdToName(int id){
         for (CoinIdsEnum e : CoinIdsEnum.values()) {
             if (e.getId() == (id)) {

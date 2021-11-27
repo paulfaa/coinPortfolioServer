@@ -4,12 +4,15 @@ import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.service.CoinService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,21 +27,22 @@ public class CoinServiceTest {
     private CoinService coinService;
 
     @Test
-    public void testGetCoinmarketRateForCoin() throws JsonProcessingException {
-        assertEquals("1234", coinService.getCoinmarketRateForCoin("bitcoin"));
+    public void testGetCoinmarketRateForCoin() throws JSONException {
+        //assertEquals(BigDecimal.valueOf(0.6763088220435858), coinService.getCoinmarketRateForCoin("bitcoin"));
+        //value of response changes each time for testAPI server, just assert response is a bigDecimal
+        assertTrue(coinService.getCoinmarketRateForCoin("bitcoin").getClass() == BigDecimal.class);
     }
 
     @Test
-    public void processRequestParams() throws JsonProcessingException {
+    public void processRequestParams() throws JSONException {
         //Arrange
         Map<String, CurrenciesEnum> request = new HashMap<>();
-        Rate targetRate = new Rate(CurrenciesEnum.EUR, 0123, LocalDateTime.now());
+        Rate targetRate = new Rate(CurrenciesEnum.USD, BigDecimal.valueOf(0123), LocalDateTime.now());
 
         //Act
-        request.put("Bitcoin", CurrenciesEnum.EUR);
+        request.put("Bitcoin", CurrenciesEnum.USD);
 
         //Assert
-        assertEquals(targetRate, coinService.processRequestParams(request));
+        assertEquals(targetRate, coinService.processRequestParams(request)); //request works, just need function to format response properly
     }
-
 }

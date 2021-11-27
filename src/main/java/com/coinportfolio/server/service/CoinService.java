@@ -6,12 +6,16 @@ import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -30,28 +34,23 @@ public class CoinService {
     @Autowired
     private AllCoins allCoins;
 
-    private String testUrl = "sandbox-api.coinmarketcap.com";
-    private String prodUrl = "pro-api.coinmarketcap.com";
-    private String testApiKey = "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c";
-
-    private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(3);
-
-    private final WebClient localApiClient;
-
     @Autowired
     public CoinService(WebClient localApiClient) {
         this.localApiClient = localApiClient;
     }
 
-    //private HttpHeaders request;
-    //request.setHeader(HttpHeaders.ACCEPT, "application/json");
-    //request.addHeader("X-CMC_PRO_API_KEY", testApiKey);
+    private final WebClient localApiClient;
+    private String testUrl = "sandbox-api.coinmarketcap.com";
+    private String prodUrl = "pro-api.coinmarketcap.com";
+    private String testApiKey = "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c";
+
+    //private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(3);
 
     public void RestService(RestTemplateBuilder restTemplateBuilder) {
         restTemplate = restTemplateBuilder.build();
     }
 
-    public Rate processRequestParams(Map<String, CurrenciesEnum> query) throws JsonProcessingException {
+    public Rate processRequestParams(Map<String, CurrenciesEnum> query) throws JSONException {
         String requestedCoin = query.keySet().stream().findFirst().get();
         int coinId = CoinNameToCoinmarketId.convertNameToInt(requestedCoin);
         if (!allCoins.checkIfListContainsCoin(requestedCoin)){
@@ -71,26 +70,33 @@ public class CoinService {
         return rate;
     }
 
-    public static long getCoinmarketRateForCoin(String coinName) throws JsonProcessingException {
+    public static BigDecimal getCoinmarketRateForCoin(String coinName) throws JSONException {
         int coinId = CoinNameToCoinmarketId.convertNameToInt(coinName.toUpperCase(Locale.ROOT));
-        return Long.parseLong(Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId,
-                String.class)));
+        String response = Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId,
+                String.class));
+        return getPriceFromResponse(response);
     }
 
-    public static long getCoinmarketRateForCoin(int coinId) throws JsonProcessingException {  //resttemplate is null here
-        return Long.parseLong(Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId,
-                String.class)));
+    public static BigDecimal getCoinmarketRateForCoin(int coinId) throws JSONException {
+        String response = Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId,
+                String.class));
+        return getPriceFromResponse(response);
     }
 
-    public String getFromUrl() throws JsonProcessingException {
+    public String getFromUrl() {
         return restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
                 String.class);
     }
 
     //method to parse json
-    public int getPriceFromResponse(String apiResponse){
-        //might be easier to just define request better
-        //apiResponse =
-        return 0;
+    public static BigDecimal getPriceFromResponse(String apiResponse) throws JSONException {
+        JSONObject json = new JSONObject(apiResponse);
+        String price =
+                 json.getJSONObject("data")
+                .getJSONObject("1")
+                .getJSONObject("quote")
+                .getJSONObject("USD") //should use wildcard here or better search directly for quote objecy and get price of first child
+                .getString("price");
+        return new BigDecimal(price);
     }
 }

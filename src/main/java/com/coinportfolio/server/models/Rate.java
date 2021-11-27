@@ -2,15 +2,16 @@ package com.coinportfolio.server.models;
 
 import com.coinportfolio.server.enums.CurrenciesEnum;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Rate {
     CurrenciesEnum currency; //might not be needed
-    private long value;
+    private BigDecimal value;
     private LocalDateTime localDateTime;
 
-    public Rate(CurrenciesEnum currency, long value, LocalDateTime localDateTime) {
+    public Rate(CurrenciesEnum currency, BigDecimal value, LocalDateTime localDateTime) {
         this.currency = currency;
         this.value = value;
         this.localDateTime = localDateTime;
@@ -24,11 +25,11 @@ public class Rate {
         this.localDateTime = date;
     }
 
-    public long getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(int BigDecimal) {
         this.value = value;
     }
 }

@@ -3,18 +3,13 @@ package com.coinportfolio.server;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
-import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
 import com.coinportfolio.server.service.CoinService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -49,7 +44,7 @@ public class CoinController {
 
     //request params are coin name and the users currency
     @GetMapping("/getRate")
-    public Rate rate(@RequestParam Map<String, CurrenciesEnum> query) throws JsonProcessingException {
+    public Rate rate(@RequestParam Map<String, CurrenciesEnum> query) throws JSONException {
         //stringToEnumConverterFactory should automatically convert string param
         return coinService.processRequestParams(query);
     }

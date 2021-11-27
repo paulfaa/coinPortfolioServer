@@ -2,6 +2,7 @@ package com.coinportfolio.server.models;
 
 import com.coinportfolio.server.enums.CurrenciesEnum;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 public class Coin {
@@ -37,7 +38,7 @@ public class Coin {
         currencyValues.put(currencyTicker, rate);
     }
 
-    public long getValue(CurrenciesEnum currencyTicker){
+    public BigDecimal getValue(CurrenciesEnum currencyTicker){
         return currencyValues.get(currencyTicker).getValue();
     }
 
