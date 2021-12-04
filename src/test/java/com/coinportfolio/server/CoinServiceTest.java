@@ -1,6 +1,7 @@
 package com.coinportfolio.server;
 
 import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.service.CoinService;
 import org.json.JSONException;
@@ -28,6 +29,9 @@ public class CoinServiceTest {
     @Autowired
     private CoinService coinService;
 
+    @Autowired
+    private AllCoins allCoins;
+
     @Test
     public void testGetCoinmarketRateForCoin() throws JSONException {
         //assertEquals(BigDecimal.valueOf(0.6763088220435858), coinService.getCoinmarketRateForCoin("bitcoin"));
@@ -45,19 +49,39 @@ public class CoinServiceTest {
         //Arrange
         Map<String, CurrenciesEnum> request = new HashMap<>();
         Rate targetRate = new Rate(CurrenciesEnum.USD, BigDecimal.valueOf(0123), LocalDateTime.now());
+        assertEquals(0, allCoins.getLength());
 
         //Act
         request.put("Bitcoin", CurrenciesEnum.USD);
         Rate actualRate = coinService.processRequestParams(request);
 
         //Assert
+        assertEquals(1, allCoins.getLength());
+        assertTrue(targetRate.getValue() != null);
+        assertTrue(targetRate.getValue().getClass() == BigDecimal.class);
         //value of response changes each time for testAPI server, just assert rate is a bigDecimal
-        assertTrue(targetRate.equals(actualRate));
+        //assertTrue(targetRate.equals(actualRate));
     }
 
     @Test
-    public void testThatRateIsUpdatedEachHour() {
+    public void testServiceReadsFromAllCoins() throws JSONException {
+        // Make sure method reads from AllCoins if it already contains valid data for that coin + currency
+        // Arrange
+        BigDecimal coinValue = BigDecimal.valueOf(50000);
+        Coin coin = new Coin(1, "Bitcoin");
+        Rate rate = new Rate(CurrenciesEnum.USD, coinValue, LocalDateTime.now());
+        coin.setValue(CurrenciesEnum.USD, rate);
+        allCoins.addCoin(coin);
+        Map<String, CurrenciesEnum> request = new HashMap<>();
+        request.put("Bitcoin", CurrenciesEnum.USD);
+        assertEquals(1, allCoins.getLength());
 
+        //Act
+        Rate actualRate = coinService.processRequestParams(request);
+
+        // Assert
+        assertEquals(1, allCoins.getLength());
+        assertTrue(coinValue.equals(actualRate.getValue()));
     }
 
     @Test

@@ -51,12 +51,12 @@ public class CoinService {
     public Rate processRequestParams(Map<String, CurrenciesEnum> query) throws JSONException {
         String requestedCoin = query.keySet().stream().findFirst().get();
         int coinId = CoinNameToCoinmarketId.convertNameToInt(requestedCoin);
-        if (!allCoins.checkIfListContainsCoin(requestedCoin)){ //should search for coins using coinmarket id wherever possible
-            allCoins.addCoin(new Coin(coinId, requestedCoin)); //can convert id to string using enum
+        if (!allCoins.checkIfListContainsCoin(coinId)){
+            allCoins.addCoin(new Coin(coinId, CoinNameToCoinmarketId.convertIdToName(coinId)));
         }
         CurrenciesEnum currency = query.values().stream().findFirst().get();
-        Coin c = allCoins.getCoin(requestedCoin);
-        HashMap<CurrenciesEnum, Rate> rates = allCoins.getCoin(requestedCoin).getCurrencyValues();
+        Coin c = allCoins.getCoin(coinId);
+        HashMap<CurrenciesEnum, Rate> rates = c.getCurrencyValues();
         if (rates.containsKey(currency) && LocalDateTime.now().getHour() <= rates.get(currency).getLocalDateTime().getHour() ){
             //if recent rate for this currency already exists, return it
             return rates.get(currency);
@@ -87,12 +87,18 @@ public class CoinService {
 
     public static BigDecimal getPriceFromResponse(String apiResponse, CurrenciesEnum currency) throws JSONException {
         JSONObject object = new JSONObject(apiResponse);
-        String price =
-                 object.getJSONObject("data")
-                .getJSONObject("0") //changes between 1 and 0? need to fix
-                .getJSONObject("quote")
-                .getJSONObject(currency.toString().toUpperCase())
-                .getString("price");
-        return new BigDecimal(price);
+        try{
+            String price =
+                    object.getJSONObject("data")
+                            .getJSONObject("0") //changes between 1 and 0? need to fix
+                            .getJSONObject("quote")
+                            .getJSONObject(currency.toString().toUpperCase())
+                            .getString("price");
+            return new BigDecimal(price);
+        }
+        catch (JSONException e){
+            System.out.println("Error reading response JSON. Details: " + e.getMessage());
+        }
+        return BigDecimal.ZERO;
     }
 }

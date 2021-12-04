@@ -24,7 +24,7 @@ public class AllCoins {
     }
 
     public boolean checkIfListContainsCoin(int coinId){
-        if (allCoins != null){
+        if (allCoins != null && coinId >= 0){
             for (Coin coin: allCoins) {
                 if (coin.getId() == coinId){
                     return true;
@@ -43,6 +43,21 @@ public class AllCoins {
             }
         }
         return null;
+    }
+
+    public Coin getCoin(int coinId){
+        if (allCoins != null && coinId >= 0) {
+            for (Coin coin : allCoins) {
+                if (coin.getId() == coinId) {
+                    return coin;
+                }
+            }
+        }
+        return null;
+    }
+
+    public int getLength(){
+        return allCoins.size();
     }
 
     public void addCoin(Coin coin){

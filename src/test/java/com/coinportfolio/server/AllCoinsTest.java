@@ -23,9 +23,18 @@ public class AllCoinsTest {
         assertEquals(false, allCoins.checkIfListContainsCoin("bitcoin"));
         assertEquals(false, allCoins.checkIfListContainsCoin("bit coin"));
         allCoins.addCoin(bitcoin);
+        assertEquals(false, allCoins.checkIfListContainsCoin("bit coin"));
         assertEquals(true, allCoins.checkIfListContainsCoin("Bitcoin"));
         assertEquals(true, allCoins.checkIfListContainsCoin("bitcoin"));
         assertEquals(true, allCoins.checkIfListContainsCoin("BITCOIN"));
+    }
+
+    @Test
+    public void testCheckIfListContainsCoinInt(){
+        assertEquals(false, allCoins.checkIfListContainsCoin(1));
+        allCoins.addCoin(bitcoin);
+        assertEquals(true, allCoins.checkIfListContainsCoin(1));
+        assertEquals(false, allCoins.checkIfListContainsCoin(123));
     }
 
     @Test
