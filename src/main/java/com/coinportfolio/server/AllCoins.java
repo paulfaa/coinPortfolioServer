@@ -63,4 +63,8 @@ public class AllCoins {
     public void addCoin(Coin coin){
         allCoins.add(coin);
     }
+
+    public void clearList(){
+        allCoins = new ArrayList<>();
+    }
 }

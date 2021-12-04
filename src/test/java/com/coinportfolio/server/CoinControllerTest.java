@@ -30,7 +30,7 @@ public class CoinControllerTest {
 
     private String localhost = "http://localhost:" + port;
 
-    @Before
+    /*@Before
     public void setUp(){
         restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
             request.getHeaders().add("X-CMC_PRO_API_KEY", "047f0335-8f37-4cb3-a596-222dac0321a6");
@@ -59,5 +59,5 @@ public class CoinControllerTest {
                 .param("Coin name", "Bitcoin")
                 .param("Currency", "EUR"))
                 .andExpect(content().contentType("application/json"));
-    }
+    }*/
 }

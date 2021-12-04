@@ -57,5 +57,4 @@ public class Coin {
         Coin coin = (Coin) o;
         return name.equals(coin.name);
     }
-
 }

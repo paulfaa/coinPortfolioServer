@@ -6,7 +6,6 @@ import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
 import com.coinportfolio.server.utils.RestTemplateResponseErrorHandler;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -43,12 +42,11 @@ public class CoinService {
     private static final String DEFAULT_QUOTE_REQUEST = "https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=";
     private static final int DEFAULT_REQUEST_COOLDOWN = 3600;
 
-
     //public void RestService(RestTemplateBuilder restTemplateBuilder) {
     //    restTemplate = restTemplateBuilder.build();
     //}
 
-    public Rate processRequestParams(Map<String, CurrenciesEnum> query) throws JSONException {
+    public Rate processRequestParams(Map<String, CurrenciesEnum> query) {
         String requestedCoin = query.keySet().stream().findFirst().get();
         int coinId = CoinNameToCoinmarketId.convertNameToInt(requestedCoin);
         if (!allCoins.checkIfListContainsCoin(coinId)){
@@ -67,14 +65,14 @@ public class CoinService {
         return rate;
     }
 
-    public static BigDecimal getCoinmarketRateForCoin(String coinName, CurrenciesEnum currency) throws JSONException {
+    public static BigDecimal getCoinmarketRateForCoin(String coinName, CurrenciesEnum currency) {
         int coinId = CoinNameToCoinmarketId.convertNameToInt(coinName.toUpperCase(Locale.ROOT));
         String response = Objects.requireNonNull(restTemplate.getForObject(DEFAULT_QUOTE_REQUEST + coinId + "&convert=" + currency.toString(),
                 String.class));
         return getPriceFromResponse(response, currency);
     }
 
-    public static BigDecimal getCoinmarketRateForCoin(int coinId, CurrenciesEnum currency) throws JSONException {
+    public static BigDecimal getCoinmarketRateForCoin(int coinId, CurrenciesEnum currency) {
         String response = Objects.requireNonNull(restTemplate.getForObject(DEFAULT_QUOTE_REQUEST + coinId + "&convert=" + currency.toString(),
                 String.class));
         return getPriceFromResponse(response, currency);
@@ -85,9 +83,9 @@ public class CoinService {
                 String.class);
     }
 
-    public static BigDecimal getPriceFromResponse(String apiResponse, CurrenciesEnum currency) throws JSONException {
-        JSONObject object = new JSONObject(apiResponse);
+    public static BigDecimal getPriceFromResponse(String apiResponse, CurrenciesEnum currency) {
         try{
+            JSONObject object = new JSONObject(apiResponse);
             String price =
                     object.getJSONObject("data")
                             .getJSONObject("0") //changes between 1 and 0? need to fix
@@ -96,7 +94,7 @@ public class CoinService {
                             .getString("price");
             return new BigDecimal(price);
         }
-        catch (JSONException e){
+        catch (Exception e){
             System.out.println("Error reading response JSON. Details: " + e.getMessage());
         }
         return BigDecimal.ZERO;
