@@ -43,7 +43,7 @@ public class Rate {
         }
         Rate other = (Rate) obj;
         return (currency == other.currency
-                //&& value.compareTo(other.getValue()) == 0 //ignore this while using testApi otherwise always fails
+                && value.compareTo(other.getValue()) == 0 //ignore this while using testApi otherwise always fails
                 && localDateTime.getHour() == other.getLocalDateTime().getHour());
     }
 }
