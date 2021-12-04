@@ -18,10 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class CoinService {
@@ -58,29 +55,28 @@ public class CoinService {
         }
         CurrenciesEnum currency = query.values().stream().findFirst().get();
         Coin c = allCoins.getCoin(requestedCoin);
-        System.out.println(c);
         HashMap<CurrenciesEnum, Rate> rates = allCoins.getCoin(requestedCoin).getCurrencyValues(); //need null check here
         if (rates.containsKey(currency) && LocalDateTime.now().getHour() <= rates.get(currency).getLocalDateTime().getHour() ){
             //if recent rate for this currency already exists, return it
             return rates.get(currency);
         }
-        Rate rate = new Rate(currency, getCoinmarketRateForCoin(coinId), LocalDateTime.now());
+        Rate rate = new Rate(currency, getCoinmarketRateForCoin(coinId, currency), LocalDateTime.now());
         //update with new rate
-        allCoins.getCoin("coinName").setCurrencyValues(currency, rate);
+        c.setCurrencyValues(currency, rate);
         return rate;
     }
 
-    public static BigDecimal getCoinmarketRateForCoin(String coinName) throws JSONException {
+    public static BigDecimal getCoinmarketRateForCoin(String coinName, CurrenciesEnum currency) throws JSONException {
         int coinId = CoinNameToCoinmarketId.convertNameToInt(coinName.toUpperCase(Locale.ROOT));
-        String response = Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId,
+        String response = Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId + "&convert=" + currency.toString(),
                 String.class));
-        return getPriceFromResponse(response);
+        return getPriceFromResponse(response, currency);
     }
 
-    public static BigDecimal getCoinmarketRateForCoin(int coinId) throws JSONException {
-        String response = Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId,
+    public static BigDecimal getCoinmarketRateForCoin(int coinId, CurrenciesEnum currency) throws JSONException {
+        String response = Objects.requireNonNull(restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=" + coinId + "&convert=" + currency.toString(),
                 String.class));
-        return getPriceFromResponse(response);
+        return getPriceFromResponse(response, currency);
     }
 
     public String getFromUrl() {
@@ -88,14 +84,13 @@ public class CoinService {
                 String.class);
     }
 
-    //method to parse json
-    public static BigDecimal getPriceFromResponse(String apiResponse) throws JSONException {
-        JSONObject json = new JSONObject(apiResponse);
+    public static BigDecimal getPriceFromResponse(String apiResponse, CurrenciesEnum currency) throws JSONException {
+        JSONObject object = new JSONObject(apiResponse);
         String price =
-                 json.getJSONObject("data")
-                .getJSONObject("1")
+                 object.getJSONObject("data")
+                .getJSONObject("0") //changes between 1 and 0? need to fix
                 .getJSONObject("quote")
-                .getJSONObject("USD") //should use wildcard here or better search directly for quote objecy and get price of first child
+                .getJSONObject(currency.toString().toUpperCase())
                 .getString("price");
         return new BigDecimal(price);
     }
