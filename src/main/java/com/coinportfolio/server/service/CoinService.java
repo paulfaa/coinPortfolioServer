@@ -6,7 +6,9 @@ import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
 import com.coinportfolio.server.utils.RestTemplateResponseErrorHandler;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -79,24 +81,21 @@ public class CoinService {
     }
 
     public String getFromUrl() {
-        return restTemplate.getForObject(DEFAULT_QUOTE_REQUEST,
+        return restTemplate.getForObject("https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=1",
                 String.class);
     }
 
     public static BigDecimal getPriceFromResponse(String apiResponse, CurrenciesEnum currency) {
-        try{
-            JSONObject object = new JSONObject(apiResponse);
-            String price =
-                    object.getJSONObject("data")
-                            .getJSONObject("0") //changes between 1 and 0? need to fix
-                            .getJSONObject("quote")
-                            .getJSONObject(currency.toString().toUpperCase())
-                            .getString("price");
-            return new BigDecimal(price);
+        BigDecimal price = null;
+        try {
+            ObjectMapper mapper = new JsonMapper();
+            JsonNode node = mapper.readTree(apiResponse);
+            price = new BigDecimal(node.findValue("price").toString());
+            return price;
         }
         catch (Exception e){
             System.out.println("Error reading response JSON. Details: " + e.getMessage());
+            return price;
         }
-        return BigDecimal.ZERO;
     }
 }

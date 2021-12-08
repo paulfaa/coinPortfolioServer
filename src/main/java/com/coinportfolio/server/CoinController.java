@@ -44,13 +44,18 @@ public class CoinController {
 
     //request params are coin name and the users currency
     @GetMapping("/getRate")
-    public Rate rate(@RequestParam Map<String, CurrenciesEnum> query) throws JSONException {
+    public Rate rate(@RequestParam Map<String, CurrenciesEnum> query) {  //class java.lang.String cannot be cast to class com.coinportfolio.server.enums.CurrenciesEnum
         //stringToEnumConverterFactory should automatically convert string param
         return coinService.processRequestParams(query);
     }
 
     @GetMapping("/restTemplate")
-    public String getFromUrl() throws JsonProcessingException {
+    public String getFromUrl() {
         return coinService.getFromUrl();
+    }
+
+    @GetMapping("/error")
+    public String showError(){
+        return "Error";
     }
 }
