@@ -1,6 +1,8 @@
 package com.coinportfolio.server;
 
 import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.exceptions.GetRateException;
+import com.coinportfolio.server.exceptions.ResponseJsonException;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.service.CoinService;
@@ -9,7 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -37,7 +42,7 @@ public class CoinServiceTest {
     }
 
     @Test
-    public void testGetCoinmarketRateForCoin() {
+    public void testGetCoinmarketRateForCoin() throws ResponseJsonException {
         // Act
         BigDecimal response = coinService.getCoinmarketRateForCoin("bitcoin", CurrenciesEnum.USD);
 
@@ -56,12 +61,18 @@ public class CoinServiceTest {
 
         //Act
         request.put("Bitcoin", CurrenciesEnum.USD);
-        Rate actualRate = coinService.processRequestParams(request);
+        Rate actualRate = null;
+        try {
+            actualRate = coinService.processRequestParams(request);
+        } catch (GetRateException e) {
+            e.printStackTrace();
+        }
 
         //Assert
         assertEquals(1, allCoins.getLength());
-        assertTrue(targetRate.getValue() != null);
-        assertTrue(targetRate.getValue().getClass() == BigDecimal.class);
+        assertTrue(actualRate.getValue() != null);
+        assertTrue(actualRate.getValue().compareTo(BigDecimal.ZERO) > 0);
+        assertTrue(actualRate.getValue().getClass() == BigDecimal.class);
         //value of response changes each time for testAPI server, just assert rate is a bigDecimal
         //assertTrue(targetRate.equals(actualRate));
     }
@@ -80,12 +91,27 @@ public class CoinServiceTest {
         assertEquals(1, allCoins.getLength());
 
         //Act
-        Rate actualRate = coinService.processRequestParams(request);
+        Rate actualRate = null;
+        try {
+            actualRate = coinService.processRequestParams(request);
+        } catch (GetRateException e) {
+            e.printStackTrace();
+        }
 
         // Assert
         assertEquals(1, allCoins.getLength());
         assertNotNull(actualRate.getValue());
         assertTrue(coinValue.equals(actualRate.getValue()));
+    }
+
+    @Test
+    public void testGetPriceFromResponse(){
+        //test with null response, assert exception is thrown
+        String response = null;
+        assertThrows(ResponseJsonException.class,
+                ()->{
+                    coinService.getPriceFromResponse(response);
+                });
     }
 
     @Test
@@ -104,7 +130,12 @@ public class CoinServiceTest {
         assertEquals(allCoins.getCoin(1).getCurrencyValues().get(CurrenciesEnum.USD).getLocalDateTime(), oldDate);
 
         //Act
-        Rate actualRate = coinService.processRequestParams(request);
+        Rate actualRate = null;
+        try {
+            actualRate = coinService.processRequestParams(request);
+        } catch (GetRateException e) {
+            e.printStackTrace();
+        }
 
         // Assert
         assertEquals(1, allCoins.getLength());

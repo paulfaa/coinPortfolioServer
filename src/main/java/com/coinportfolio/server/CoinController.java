@@ -1,6 +1,7 @@
 package com.coinportfolio.server;
 
 import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.exceptions.GetRateException;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.service.CoinService;
@@ -44,7 +45,7 @@ public class CoinController {
 
     //request params are coin name and the users currency
     @GetMapping("/getRate")
-    public Rate rate(@RequestParam Map<String, CurrenciesEnum> query) {  //class java.lang.String cannot be cast to class com.coinportfolio.server.enums.CurrenciesEnum
+    public Rate rate(@RequestParam Map<String, CurrenciesEnum> query) throws GetRateException {  //class java.lang.String cannot be cast to class com.coinportfolio.server.enums.CurrenciesEnum
         //stringToEnumConverterFactory should automatically convert string param
         return coinService.processRequestParams(query);
     }

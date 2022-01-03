@@ -2,6 +2,8 @@ package com.coinportfolio.server.service;
 
 import com.coinportfolio.server.AllCoins;
 import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.exceptions.GetRateException;
+import com.coinportfolio.server.exceptions.ResponseJsonException;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
@@ -44,8 +46,7 @@ public class CoinService {
     private static final String DEFAULT_QUOTE_REQUEST = "https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=";
     private static final int DEFAULT_REQUEST_COOLDOWN = 3600;
 
-    public Rate processRequestParams(Map<String, CurrenciesEnum> query) {
-        Rate rate = null;
+    public Rate processRequestParams(Map<String, CurrenciesEnum> query) throws GetRateException {
         String requestedCoin = query.keySet().stream().findFirst().get();
         int coinId = CoinNameToCoinmarketId.convertNameToInt(requestedCoin);
         if (!allCoins.checkIfListContainsCoin(coinId)){
@@ -60,24 +61,23 @@ public class CoinService {
         }
         //otherwise, make api call to get rate
         try{
-            rate = new Rate(currency, getCoinmarketRateForCoin(coinId, currency), LocalDateTime.now());
+            Rate rate = new Rate(currency, getCoinmarketRateForCoin(coinId, currency), LocalDateTime.now());
             c.setCurrencyValues(currency, rate);
             return rate;
         }
         catch (Exception e){
-            System.out.println("Error in getting coinMarketCap rate for " + requestedCoin + " : " + e.getMessage());
-            return null;
+            throw new GetRateException("Error in getting coinMarketCap rate for " + requestedCoin, e);
         }
     }
 
-    public static BigDecimal getCoinmarketRateForCoin(String coinName, CurrenciesEnum currency) {
+    public static BigDecimal getCoinmarketRateForCoin(String coinName, CurrenciesEnum currency) throws ResponseJsonException {
         int coinId = CoinNameToCoinmarketId.convertNameToInt(coinName.toUpperCase(Locale.ROOT));
         String response = Objects.requireNonNull(restTemplate.getForObject(DEFAULT_QUOTE_REQUEST + coinId + "&convert=" + currency.toString(),
                 String.class));
         return getPriceFromResponse(response);
     }
 
-    public static BigDecimal getCoinmarketRateForCoin(int coinId, CurrenciesEnum currency) {
+    public static BigDecimal getCoinmarketRateForCoin(int coinId, CurrenciesEnum currency) throws ResponseJsonException {
         String response = Objects.requireNonNull(restTemplate.getForObject(DEFAULT_QUOTE_REQUEST + coinId + "&convert=" + currency.toString(),
                 String.class));
         return getPriceFromResponse(response);
@@ -88,17 +88,15 @@ public class CoinService {
                 String.class);
     }
 
-    public static BigDecimal getPriceFromResponse(String apiResponse) {
-        BigDecimal price = null;
+    public static BigDecimal getPriceFromResponse(String apiResponse) throws ResponseJsonException {
         try {
             ObjectMapper mapper = new JsonMapper();
             JsonNode node = mapper.readTree(apiResponse);
-            price = new BigDecimal(node.findValue("price").toString());
+            BigDecimal price = new BigDecimal(node.findValue("price").toString());
             return price;
         }
         catch (Exception e){
-            System.out.println("Error reading response JSON. Details: " + e.getMessage());
-            return price;
+            throw new ResponseJsonException("Error reading response JSON. Details: ", e);
         }
     }
 }
