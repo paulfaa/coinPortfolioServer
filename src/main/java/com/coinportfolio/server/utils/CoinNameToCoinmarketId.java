@@ -1,13 +1,13 @@
 package com.coinportfolio.server.utils;
 
-import com.coinportfolio.server.enums.CoinIdsEnum;
+import com.coinportfolio.server.enums.CoinIdEnum;
 
 public final class CoinNameToCoinmarketId {
 
     //return 0 for invalid
     public static int convertNameToInt(String coinName){
         try{
-            return CoinIdsEnum.valueOf(coinName.toUpperCase()).getId();
+            return CoinIdEnum.valueOf(coinName.toUpperCase()).getId();
         }
         catch (Exception e){
             return 0;
@@ -17,7 +17,7 @@ public final class CoinNameToCoinmarketId {
     //return null for invalid
     public static String convertIdToName(int id){
         try {
-            for (CoinIdsEnum e : CoinIdsEnum.values()) {
+            for (CoinIdEnum e : CoinIdEnum.values()) {
                 if (e.getId() == (id)) {
                     return e.toString();
                 }

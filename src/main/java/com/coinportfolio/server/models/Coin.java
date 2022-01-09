@@ -9,13 +9,13 @@ public class Coin {
 
     private int id;
     private String name;
-    // store value for this particular coin in different currencies
-    private HashMap<CurrenciesEnum, Rate> currencyValues = new HashMap<CurrenciesEnum, Rate>();
+
+    private HashMap<CurrenciesEnum, Rate> currencyValues; // store value for this particular coin in different currencies
 
     public Coin(int id, String name) { //missing currencyValues in constructor
         this.id = id;
         this.name = name;
-        this.currencyValues = currencyValues;
+        this.currencyValues = new HashMap<CurrenciesEnum, Rate>();
     }
 
     public int getId() {
@@ -39,7 +39,12 @@ public class Coin {
     }
 
     public BigDecimal getValue(CurrenciesEnum currencyTicker){
-        return currencyValues.get(currencyTicker).getValue();
+        try{
+            return currencyValues.get(currencyTicker).getValue();
+        }
+        catch (Exception e){
+            throw new NullPointerException("Coin does not hold a value for " + currencyTicker.toString() + e);
+        }
     }
 
     public HashMap<CurrenciesEnum, Rate> getCurrencyValues(){

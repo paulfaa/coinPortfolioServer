@@ -1,6 +1,6 @@
 package com.coinportfolio.server.enums;
 
-public enum CoinIdsEnum {
+public enum CoinIdEnum {
     //enum to map name to  coinmarket holding ids
 
     BITCOIN(1),
@@ -13,7 +13,7 @@ public enum CoinIdsEnum {
 
     private final int id;
 
-    CoinIdsEnum(int id) {
+    CoinIdEnum(int id) {
         this.id = id;
     }
 
