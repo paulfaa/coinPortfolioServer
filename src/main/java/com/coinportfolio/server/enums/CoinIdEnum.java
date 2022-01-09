@@ -20,4 +20,13 @@ public enum CoinIdEnum {
     public int getId(){
         return this.id;
     }
+
+    public static CoinIdEnum getEnumFromId(int id){
+        for(CoinIdEnum c : values()){
+            if( c.id == id){
+                return c;
+            }
+        }
+        return null;
+    }
 }

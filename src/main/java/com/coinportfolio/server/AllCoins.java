@@ -1,5 +1,6 @@
 package com.coinportfolio.server;
 
+import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.models.Coin;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Component;
@@ -23,8 +24,8 @@ public class AllCoins {
         return false;
     }
 
-    public boolean checkIfListContainsCoin(int coinId){
-        if (allCoins != null && coinId >= 0){
+    public boolean checkIfListContainsCoin(CoinIdEnum coinId){
+        if (allCoins != null && coinId.getId() >= 0){
             for (Coin coin: allCoins) {
                 if (coin.getId() == coinId){
                     return true;
@@ -45,8 +46,8 @@ public class AllCoins {
         return null;
     }
 
-    public Coin getCoin(int coinId){
-        if (allCoins != null && coinId >= 0) {
+    public Coin getCoin(CoinIdEnum coinId){
+        if (allCoins != null && coinId.getId() >= 0) {
             for (Coin coin : allCoins) {
                 if (coin.getId() == coinId) {
                     return coin;

@@ -1,5 +1,6 @@
 package com.coinportfolio.server;
 
+import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.exceptions.GetRateException;
 import com.coinportfolio.server.exceptions.ResponseJsonException;
@@ -77,7 +78,7 @@ public class CoinServiceTest {
         // Make sure method reads from AllCoins if it already contains valid data for that coin + currency
         // Arrange
         BigDecimal coinValue = BigDecimal.valueOf(50000);
-        Coin coin = new Coin(1, "Bitcoin");
+        Coin coin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
         Rate rate = new Rate(CurrenciesEnum.USD, coinValue, LocalDateTime.now());
         coin.setValue(CurrenciesEnum.USD, rate);
         allCoins.addCoin(coin);
@@ -115,14 +116,14 @@ public class CoinServiceTest {
         // Arrange
         BigDecimal coinValue = BigDecimal.valueOf(50000);
         LocalDateTime oldDate = LocalDateTime.of(2021,01,01, 11, 11);
-        Coin coin = new Coin(1, "Bitcoin");
+        Coin coin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
         Rate rate = new Rate(CurrenciesEnum.USD, coinValue, oldDate);
         coin.setValue(CurrenciesEnum.USD, rate);
         allCoins.addCoin(coin);
         Map<String, CurrenciesEnum> request = new HashMap<>();
         request.put("Bitcoin", CurrenciesEnum.USD);
         assertEquals(1, allCoins.getLength());
-        assertEquals(allCoins.getCoin(1).getCurrencyValues().get(CurrenciesEnum.USD).getLocalDateTime(), oldDate);
+        assertEquals(allCoins.getCoin(CoinIdEnum.BITCOIN).getCurrencyValues().get(CurrenciesEnum.USD).getLocalDateTime(), oldDate);
 
         //Act
         Rate actualRate = null;

@@ -1,5 +1,6 @@
 package com.coinportfolio.server.models;
 
+import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 
 import java.math.BigDecimal;
@@ -7,23 +8,19 @@ import java.util.HashMap;
 
 public class Coin {
 
-    private int id;
+    private CoinIdEnum id;
     private String name;
 
     private HashMap<CurrenciesEnum, Rate> currencyValues; // store value for this particular coin in different currencies
 
-    public Coin(int id, String name) { //missing currencyValues in constructor
+    public Coin(CoinIdEnum id, String name) { //missing currencyValues in constructor
         this.id = id;
         this.name = name;
         this.currencyValues = new HashMap<CurrenciesEnum, Rate>();
     }
 
-    public int getId() {
+    public CoinIdEnum getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {

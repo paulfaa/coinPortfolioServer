@@ -1,5 +1,6 @@
 package com.coinportfolio.server;
 
+import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.models.Coin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class AllCoinsTest {
 
-    private Coin bitcoin = new Coin(1, "Bitcoin");
+    private Coin bitcoin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
     private AllCoins allCoins;
 
 
@@ -31,10 +32,10 @@ public class AllCoinsTest {
 
     @Test
     public void testCheckIfListContainsCoinInt(){
-        assertEquals(false, allCoins.checkIfListContainsCoin(1));
+        assertEquals(false, allCoins.checkIfListContainsCoin(CoinIdEnum.BITCOIN));
         allCoins.addCoin(bitcoin);
-        assertEquals(true, allCoins.checkIfListContainsCoin(1));
-        assertEquals(false, allCoins.checkIfListContainsCoin(123));
+        assertEquals(true, allCoins.checkIfListContainsCoin(CoinIdEnum.BITCOIN));
+        assertEquals(false, allCoins.checkIfListContainsCoin(CoinIdEnum.DOGECOIN));
     }
 
     @Test

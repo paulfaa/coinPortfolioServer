@@ -1,6 +1,7 @@
 package com.coinportfolio.server.service;
 
 import com.coinportfolio.server.AllCoins;
+import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.exceptions.GetRateException;
 import com.coinportfolio.server.exceptions.ResponseJsonException;
@@ -52,9 +53,9 @@ public class CoinService {
 
     public Rate processRequestParams(Map<String, CurrenciesEnum> query) throws GetRateException {
         String requestedCoin = query.keySet().stream().findFirst().get();
-        int coinId = CoinNameToCoinmarketId.convertNameToInt(requestedCoin);
+        CoinIdEnum coinId = CoinIdEnum.getEnumFromId(CoinNameToCoinmarketId.convertNameToInt(requestedCoin));
         if (!allCoins.checkIfListContainsCoin(coinId)){
-            allCoins.addCoin(new Coin(coinId, CoinNameToCoinmarketId.convertIdToName(coinId)));
+            allCoins.addCoin(new Coin(coinId, CoinNameToCoinmarketId.convertIdToName(coinId.getId())));
         }
         CurrenciesEnum currency = query.values().stream().findFirst().get();
         Coin c = allCoins.getCoin(coinId);
@@ -65,7 +66,7 @@ public class CoinService {
         }
         //otherwise, make api call to get rate
         try{
-            Rate rate = new Rate(currency, getCoinmarketRateForCoin(coinId, currency), LocalDateTime.now());
+            Rate rate = new Rate(currency, getCoinmarketRateForCoin(coinId.getId(), currency), LocalDateTime.now());
             c.setCurrencyValues(currency, rate);
             return rate;
         }

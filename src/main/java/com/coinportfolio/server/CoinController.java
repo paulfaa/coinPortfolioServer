@@ -1,5 +1,6 @@
 package com.coinportfolio.server;
 
+import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.exceptions.GetRateException;
 import com.coinportfolio.server.models.Coin;
@@ -21,7 +22,7 @@ public class CoinController {
 
     @GetMapping("/getCoin")
     public Coin coin(@RequestParam("id") int id) {
-        return new Coin(id, "coinName");
+        return new Coin(CoinIdEnum.getEnumFromId(id), "coinName");
     }
 
 

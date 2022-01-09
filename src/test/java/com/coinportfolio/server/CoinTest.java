@@ -1,5 +1,6 @@
 package com.coinportfolio.server;
 
+import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
@@ -20,7 +21,7 @@ public class CoinTest {
 
     @BeforeEach
     public void setup(){
-        coin = new Coin(1, "Bitcoin");
+        coin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
         rate = new Rate(CurrenciesEnum.EUR, BigDecimal.valueOf(0.55), LocalDateTime.now());
     }
 
@@ -59,10 +60,10 @@ public class CoinTest {
     @Test
     public void testEquals() { //ensure equals method only looks at coin name
         //Arrange
-        Coin otherBitcoin = new Coin(1, "Bitcoin");
+        Coin otherBitcoin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
         Rate otherRate = new Rate(CurrenciesEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
         otherBitcoin.setValue(CurrenciesEnum.EUR, otherRate);
-        Coin fakeCoin = new Coin(123, "FakeCoin");
+        Coin fakeCoin = new Coin(CoinIdEnum.DOGECOIN, "Dogecoin");
 
         //Assert
         assertTrue(coin.equals(otherBitcoin));
