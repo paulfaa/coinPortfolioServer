@@ -10,16 +10,24 @@ import static org.junit.Assert.*;
 public class CoinNameToCoinmarketIdTest {
 
     @Test
-    void testConvertName() {
+    void testConvertValidName() {
         assertEquals(1, CoinNameToCoinmarketId.convertNameToInt("BITCOIN"));
+    }
+
+    @Test
+    void testConvertInvalidName() {
         //return 0 for all invalid names
         assertEquals(0, CoinNameToCoinmarketId.convertNameToInt("DoesNotExist"));
     }
 
     @Test
-    void testConvertIdToName() {
+    void testConvertValidIdToName() {
         //coinmarketcap ID for bitcoin is 1
         assertEquals("BITCOIN", CoinNameToCoinmarketId.convertIdToName(1));
+    }
+
+    @Test
+    void testConvertInvalidIdToName() {
         //method returns null for all invalid ids
         assertNull(CoinNameToCoinmarketId.convertIdToName(-1));
     }

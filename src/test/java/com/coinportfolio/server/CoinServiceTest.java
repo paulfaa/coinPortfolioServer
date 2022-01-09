@@ -11,10 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -73,8 +69,7 @@ public class CoinServiceTest {
         assertTrue(actualRate.getValue() != null);
         assertTrue(actualRate.getValue().compareTo(BigDecimal.ZERO) > 0);
         assertTrue(actualRate.getValue().getClass() == BigDecimal.class);
-        //value of response changes each time for testAPI server, just assert rate is a bigDecimal
-        //assertTrue(targetRate.equals(actualRate));
+        //value of response changes each time for testAPI server, just assert rate is a valid bigDecimal
     }
 
     @Test

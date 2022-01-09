@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -24,8 +25,11 @@ import java.util.*;
 @Service
 public class CoinService {
 
-    private static RestTemplate restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
-        request.getHeaders().add("X-CMC_PRO_API_KEY", "047f0335-8f37-4cb3-a596-222dac0321a6");
+    @Value("${apiKey}")
+    private String apiKey;
+
+    private RestTemplate restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
+        request.getHeaders().add("X-CMC_PRO_API_KEY", apiKey);
         return execution.execute(request, body);
     })).errorHandler(new RestTemplateResponseErrorHandler()).build();
 
@@ -70,14 +74,14 @@ public class CoinService {
         }
     }
 
-    public static BigDecimal getCoinmarketRateForCoin(String coinName, CurrenciesEnum currency) throws ResponseJsonException {
+    public BigDecimal getCoinmarketRateForCoin(String coinName, CurrenciesEnum currency) throws ResponseJsonException {
         int coinId = CoinNameToCoinmarketId.convertNameToInt(coinName.toUpperCase(Locale.ROOT));
         String response = Objects.requireNonNull(restTemplate.getForObject(DEFAULT_QUOTE_REQUEST + coinId + "&convert=" + currency.toString(),
                 String.class));
         return getPriceFromResponse(response);
     }
 
-    public static BigDecimal getCoinmarketRateForCoin(int coinId, CurrenciesEnum currency) throws ResponseJsonException {
+    public BigDecimal getCoinmarketRateForCoin(int coinId, CurrenciesEnum currency) throws ResponseJsonException {
         String response = Objects.requireNonNull(restTemplate.getForObject(DEFAULT_QUOTE_REQUEST + coinId + "&convert=" + currency.toString(),
                 String.class));
         return getPriceFromResponse(response);
