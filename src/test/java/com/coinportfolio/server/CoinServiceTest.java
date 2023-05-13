@@ -136,7 +136,7 @@ public class CoinServiceTest {
         // Assert
         assertEquals(1, allCoins.getLength());
         assertNotNull(actualRate.getValue());
-        assertFalse(coinValue.equals(actualRate.getValue()));
+        assertEquals(coinValue, actualRate.getValue());
     }
 
     @Test
