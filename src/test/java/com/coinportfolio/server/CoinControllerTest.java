@@ -1,19 +1,10 @@
 package com.coinportfolio.server;
 
-import com.coinportfolio.server.models.Coin;
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

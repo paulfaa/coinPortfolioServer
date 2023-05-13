@@ -7,11 +7,10 @@ import com.coinportfolio.server.exceptions.ResponseJsonException;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.service.CoinService;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -20,6 +19,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CoinServiceTest {
@@ -45,8 +46,8 @@ public class CoinServiceTest {
 
         // Assert
         //value of response changes each time for testAPI server, just assert response is a bigDecimal
-        Assertions.assertNotNull(response);
-        assertTrue(response.getClass() == BigDecimal.class);
+        assertNotNull(response);
+        assertSame(response.getClass(), BigDecimal.class);
     }
 
     @Test
@@ -69,7 +70,7 @@ public class CoinServiceTest {
         assertEquals(1, allCoins.getLength());
         assertTrue(actualRate.getValue() != null);
         assertTrue(actualRate.getValue().compareTo(BigDecimal.ZERO) > 0);
-        assertTrue(actualRate.getValue().getClass() == BigDecimal.class);
+        assertSame(actualRate.getValue().getClass(), BigDecimal.class);
         //value of response changes each time for testAPI server, just assert rate is a valid bigDecimal
     }
 

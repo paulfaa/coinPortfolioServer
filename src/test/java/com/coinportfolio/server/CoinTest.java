@@ -4,15 +4,15 @@ import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CoinTest {
 
@@ -34,7 +34,7 @@ public class CoinTest {
         BigDecimal value = coin.getValue(CurrenciesEnum.EUR);
 
         //Assert
-        assertEquals(BigDecimal.valueOf(0.55), value);
+        Assertions.assertEquals(BigDecimal.valueOf(0.55), value);
     }
 
     @Test
@@ -48,13 +48,13 @@ public class CoinTest {
 
     @Test
     public void testSetValueOverwritesPrevious(){
-        assertEquals(0, coin.getCurrencyValues().size());
+        Assertions.assertEquals(0, coin.getCurrencyValues().size());
         coin.setValue(CurrenciesEnum.EUR, rate);
-        assertEquals(1, coin.getCurrencyValues().size());
+        Assertions.assertEquals(1, coin.getCurrencyValues().size());
 
         Rate newRate = new Rate(CurrenciesEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
         coin.setValue(CurrenciesEnum.EUR, newRate);
-        assertEquals(1, coin.getCurrencyValues().size());
+        Assertions.assertEquals(1, coin.getCurrencyValues().size());
     }
 
     @Test
@@ -66,7 +66,7 @@ public class CoinTest {
         Coin fakeCoin = new Coin(CoinIdEnum.DOGECOIN, "Dogecoin");
 
         //Assert
-        assertTrue(coin.equals(otherBitcoin));
-        assertFalse(coin.equals(fakeCoin));
+        Assertions.assertTrue(coin.equals(otherBitcoin));
+        Assertions.assertNotEquals(coin, fakeCoin);
     }
 }
