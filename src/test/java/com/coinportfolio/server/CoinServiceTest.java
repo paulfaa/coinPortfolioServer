@@ -7,8 +7,6 @@ import com.coinportfolio.server.exceptions.ResponseJsonException;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Rate;
 import com.coinportfolio.server.service.CoinService;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

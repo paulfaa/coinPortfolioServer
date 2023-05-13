@@ -66,7 +66,7 @@ public class CoinTest {
         Coin fakeCoin = new Coin(CoinIdEnum.DOGECOIN, "Dogecoin");
 
         //Assert
-        Assertions.assertTrue(coin.equals(otherBitcoin));
+        Assertions.assertEquals(coin, otherBitcoin);
         Assertions.assertNotEquals(coin, fakeCoin);
     }
 }
