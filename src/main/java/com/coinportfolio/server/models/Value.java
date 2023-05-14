@@ -10,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 public class Value {
 
     private CoinIdEnum id;
+    //private string name;
     private CurrencyEnum currency;
     private BigDecimal value;
     private LocalDateTime updateDate;

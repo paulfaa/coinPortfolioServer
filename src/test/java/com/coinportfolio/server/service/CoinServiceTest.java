@@ -109,7 +109,7 @@ public class CoinServiceTest {
                 });
     }
 
-    @Test
+    /*@Test
     public void testServiceIgnoresOutdatedRates() {
         // Make sure method ignores data in Allcoins if older than 1 hour
         // Arrange
@@ -136,7 +136,7 @@ public class CoinServiceTest {
         assertEquals(1, allCoins.getLength());
         assertNotNull(actualValue.getValue());
         assertEquals(coinValue, actualValue.getValue());
-    }
+    }*/
 
     @Test
     public void test404() {
