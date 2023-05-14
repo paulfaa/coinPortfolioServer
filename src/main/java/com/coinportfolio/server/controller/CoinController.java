@@ -1,16 +1,12 @@
-package com.coinportfolio.server;
+package com.coinportfolio.server.controller;
 
 import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.exceptions.GetRateException;
 import com.coinportfolio.server.models.Coin;
-import com.coinportfolio.server.models.Rate;
+import com.coinportfolio.server.models.Value;
 import com.coinportfolio.server.service.CoinService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -47,7 +43,7 @@ public class CoinController {
 
     //request params are coin name and the users currency
     @GetMapping("/getRate")
-    public Rate rate(@RequestParam Map<String, CurrenciesEnum> query) throws GetRateException {  //class java.lang.String cannot be cast to class com.coinportfolio.server.enums.CurrenciesEnum
+    public Value rate(@RequestParam Map<String, CurrenciesEnum> query) throws GetRateException {  //class java.lang.String cannot be cast to class com.coinportfolio.server.enums.CurrenciesEnum
         //stringToEnumConverterFactory should automatically convert string param
         return coinService.processRequestParams(query);
     }

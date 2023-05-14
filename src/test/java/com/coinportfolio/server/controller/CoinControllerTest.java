@@ -1,5 +1,6 @@
-package com.coinportfolio.server;
+package com.coinportfolio.server.controller;
 
+import com.coinportfolio.server.controller.CoinController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;

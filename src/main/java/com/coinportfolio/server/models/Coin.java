@@ -2,21 +2,19 @@ package com.coinportfolio.server.models;
 
 import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 
 public class Coin {
-
     private CoinIdEnum id;
     private String name;
 
-    private HashMap<CurrenciesEnum, Rate> currencyValues; // store value for this particular coin in different currencies
+    private HashMap<CurrenciesEnum, Value> currencyValues; // store value for this particular coin in different currencies
 
     public Coin(CoinIdEnum id, String name) { //missing currencyValues in constructor
         this.id = id;
         this.name = name;
-        this.currencyValues = new HashMap<CurrenciesEnum, Rate>();
+        this.currencyValues = new HashMap<CurrenciesEnum, Value>();
     }
 
     public CoinIdEnum getId() {
@@ -31,8 +29,8 @@ public class Coin {
         this.name = name;
     }
 
-    public void setValue(CurrenciesEnum currencyTicker, Rate rate){
-        currencyValues.put(currencyTicker, rate);
+    public void setValue(CurrenciesEnum currencyTicker, Value value){
+        currencyValues.put(currencyTicker, value);
     }
 
     public BigDecimal getValue(CurrenciesEnum currencyTicker){
@@ -44,12 +42,12 @@ public class Coin {
         }
     }
 
-    public HashMap<CurrenciesEnum, Rate> getCurrencyValues(){
+    public HashMap<CurrenciesEnum, Value> getCurrencyValues(){
         return currencyValues;
     }
 
-    public void setCurrencyValues(CurrenciesEnum currenciesEnum, Rate rate){
-        currencyValues.put(currenciesEnum, rate);
+    public void setCurrencyValues(CurrenciesEnum currenciesEnum, Value value){
+        currencyValues.put(currenciesEnum, value);
     }
 
     @Override

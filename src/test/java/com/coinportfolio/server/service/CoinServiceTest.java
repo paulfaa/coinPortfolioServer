@@ -1,11 +1,12 @@
-package com.coinportfolio.server;
+package com.coinportfolio.server.service;
 
+import com.coinportfolio.server.AllCoins;
 import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.exceptions.GetRateException;
 import com.coinportfolio.server.exceptions.ResponseJsonException;
 import com.coinportfolio.server.models.Coin;
-import com.coinportfolio.server.models.Rate;
+import com.coinportfolio.server.models.Value;
 import com.coinportfolio.server.service.CoinService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,23 +53,23 @@ public class CoinServiceTest {
     public void processRequestParams() {
         //Arrange
         Map<String, CurrenciesEnum> request = new HashMap<>();
-        Rate targetRate = new Rate(CurrenciesEnum.USD, BigDecimal.valueOf(0123), LocalDateTime.now());
+        Value targetValue = new Value(CurrenciesEnum.USD, BigDecimal.valueOf(0123), LocalDateTime.now());
         assertEquals(0, allCoins.getLength());
 
         //Act
         request.put("Bitcoin", CurrenciesEnum.USD);
-        Rate actualRate = null;
+        Value actualValue = null;
         try {
-            actualRate = coinService.processRequestParams(request);
+            actualValue = coinService.processRequestParams(request);
         } catch (GetRateException e) {
             e.printStackTrace();
         }
 
         //Assert
         assertEquals(1, allCoins.getLength());
-        assertTrue(actualRate.getValue() != null);
-        assertTrue(actualRate.getValue().compareTo(BigDecimal.ZERO) > 0);
-        assertSame(actualRate.getValue().getClass(), BigDecimal.class);
+        assertTrue(actualValue.getValue() != null);
+        assertTrue(actualValue.getValue().compareTo(BigDecimal.ZERO) > 0);
+        assertSame(actualValue.getValue().getClass(), BigDecimal.class);
         //value of response changes each time for testAPI server, just assert rate is a valid bigDecimal
     }
 
@@ -78,25 +79,25 @@ public class CoinServiceTest {
         // Arrange
         BigDecimal coinValue = BigDecimal.valueOf(50000);
         Coin coin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
-        Rate rate = new Rate(CurrenciesEnum.USD, coinValue, LocalDateTime.now());
-        coin.setValue(CurrenciesEnum.USD, rate);
+        Value value = new Value(CurrenciesEnum.USD, coinValue, LocalDateTime.now());
+        coin.setValue(CurrenciesEnum.USD, value);
         allCoins.addCoin(coin);
         Map<String, CurrenciesEnum> request = new HashMap<>();
         request.put("Bitcoin", CurrenciesEnum.USD);
         assertEquals(1, allCoins.getLength());
 
         //Act
-        Rate actualRate = null;
+        Value actualValue = null;
         try {
-            actualRate = coinService.processRequestParams(request);
+            actualValue = coinService.processRequestParams(request);
         } catch (GetRateException e) {
             e.printStackTrace();
         }
 
         // Assert
         assertEquals(1, allCoins.getLength());
-        assertNotNull(actualRate.getValue());
-        assertTrue(coinValue.equals(actualRate.getValue()));
+        assertNotNull(actualValue.getValue());
+        assertTrue(coinValue.equals(actualValue.getValue()));
     }
 
     @Test
@@ -116,26 +117,26 @@ public class CoinServiceTest {
         BigDecimal coinValue = BigDecimal.valueOf(50000);
         LocalDateTime oldDate = LocalDateTime.of(2021,01,01, 11, 11);
         Coin coin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
-        Rate rate = new Rate(CurrenciesEnum.USD, coinValue, oldDate);
-        coin.setValue(CurrenciesEnum.USD, rate);
+        Value value = new Value(CurrenciesEnum.USD, coinValue, oldDate);
+        coin.setValue(CurrenciesEnum.USD, value);
         allCoins.addCoin(coin);
         Map<String, CurrenciesEnum> request = new HashMap<>();
         request.put("Bitcoin", CurrenciesEnum.USD);
         assertEquals(1, allCoins.getLength());
-        assertEquals(allCoins.getCoin(CoinIdEnum.BITCOIN).getCurrencyValues().get(CurrenciesEnum.USD).getLocalDateTime(), oldDate);
+        assertEquals(allCoins.getCoin(CoinIdEnum.BITCOIN).getCurrencyValues().get(CurrenciesEnum.USD).getUpdateDate(), oldDate);
 
         //Act
-        Rate actualRate = null;
+        Value actualValue = null;
         try {
-            actualRate = coinService.processRequestParams(request);
+            actualValue = coinService.processRequestParams(request);
         } catch (GetRateException e) {
             e.printStackTrace();
         }
 
         // Assert
         assertEquals(1, allCoins.getLength());
-        assertNotNull(actualRate.getValue());
-        assertEquals(coinValue, actualRate.getValue());
+        assertNotNull(actualValue.getValue());
+        assertEquals(coinValue, actualValue.getValue());
     }
 
     @Test

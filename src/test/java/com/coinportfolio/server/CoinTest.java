@@ -3,7 +3,7 @@ package com.coinportfolio.server;
 import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.models.Coin;
-import com.coinportfolio.server.models.Rate;
+import com.coinportfolio.server.models.Value;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,18 +17,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CoinTest {
 
     public Coin coin;
-    public Rate rate;
+    public Value value;
 
     @BeforeEach
     public void setup(){
         coin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
-        rate = new Rate(CurrenciesEnum.EUR, BigDecimal.valueOf(0.55), LocalDateTime.now());
+        value = new Value(CurrenciesEnum.EUR, BigDecimal.valueOf(0.55), LocalDateTime.now());
     }
 
     @Test
     public void testGetValue(){
         //Arrange
-        coin.setValue(CurrenciesEnum.EUR, rate);
+        coin.setValue(CurrenciesEnum.EUR, value);
 
         //Act
         BigDecimal value = coin.getValue(CurrenciesEnum.EUR);
@@ -49,11 +49,11 @@ public class CoinTest {
     @Test
     public void testSetValueOverwritesPrevious(){
         Assertions.assertEquals(0, coin.getCurrencyValues().size());
-        coin.setValue(CurrenciesEnum.EUR, rate);
+        coin.setValue(CurrenciesEnum.EUR, value);
         Assertions.assertEquals(1, coin.getCurrencyValues().size());
 
-        Rate newRate = new Rate(CurrenciesEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
-        coin.setValue(CurrenciesEnum.EUR, newRate);
+        Value newValue = new Value(CurrenciesEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
+        coin.setValue(CurrenciesEnum.EUR, newValue);
         Assertions.assertEquals(1, coin.getCurrencyValues().size());
     }
 
@@ -61,8 +61,8 @@ public class CoinTest {
     public void testEquals() { //ensure equals method only looks at coin name
         //Arrange
         Coin otherBitcoin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
-        Rate otherRate = new Rate(CurrenciesEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
-        otherBitcoin.setValue(CurrenciesEnum.EUR, otherRate);
+        Value otherValue = new Value(CurrenciesEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
+        otherBitcoin.setValue(CurrenciesEnum.EUR, otherValue);
         Coin fakeCoin = new Coin(CoinIdEnum.DOGECOIN, "Dogecoin");
 
         //Assert

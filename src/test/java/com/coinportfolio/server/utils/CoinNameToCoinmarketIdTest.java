@@ -1,4 +1,4 @@
-package com.coinportfolio.server;
+package com.coinportfolio.server.utils;
 
 import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
 import org.junit.jupiter.api.Assertions;

@@ -6,14 +6,13 @@ import com.coinportfolio.server.enums.CurrenciesEnum;
 import com.coinportfolio.server.exceptions.GetRateException;
 import com.coinportfolio.server.exceptions.ResponseJsonException;
 import com.coinportfolio.server.models.Coin;
-import com.coinportfolio.server.models.Rate;
+import com.coinportfolio.server.models.Value;
 import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
 import com.coinportfolio.server.utils.RestTemplateResponseErrorHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,7 +25,7 @@ import java.util.*;
 @Service
 public class CoinService {
 
-    @Value("${apiKey}")
+    @org.springframework.beans.factory.annotation.Value("${apiKey}")
     private String apiKey;
 
     private RestTemplate restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
@@ -51,7 +50,7 @@ public class CoinService {
     private static final String DEFAULT_QUOTE_REQUEST = "https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=";
     private static final int DEFAULT_REQUEST_COOLDOWN = 3600;
 
-    public Rate processRequestParams(Map<String, CurrenciesEnum> query) throws GetRateException {
+    public Value processRequestParams(Map<String, CurrenciesEnum> query) throws GetRateException {
         String requestedCoin = query.keySet().stream().findFirst().get();
         CoinIdEnum coinId = CoinIdEnum.getEnumFromId(CoinNameToCoinmarketId.convertNameToInt(requestedCoin));
         if (!allCoins.checkIfListContainsCoin(coinId)){
@@ -59,16 +58,16 @@ public class CoinService {
         }
         CurrenciesEnum currency = query.values().stream().findFirst().get();
         Coin c = allCoins.getCoin(coinId);
-        HashMap<CurrenciesEnum, Rate> rates = c.getCurrencyValues();
+        HashMap<CurrenciesEnum, Value> rates = c.getCurrencyValues();
         //if recent rate for this currency already exists, return it
-        if (rates.containsKey(currency) && LocalDateTime.now().getHour() <= rates.get(currency).getLocalDateTime().getHour() ){
+        if (rates.containsKey(currency) && LocalDateTime.now().getHour() <= rates.get(currency).getUpdateDate().getHour() ){
             return rates.get(currency);
         }
         //otherwise, make api call to get rate
         try{
-            Rate rate = new Rate(currency, getCoinmarketRateForCoin(coinId.getId(), currency), LocalDateTime.now());
-            c.setCurrencyValues(currency, rate);
-            return rate;
+            Value value = new Value(currency, getCoinmarketRateForCoin(coinId.getId(), currency), LocalDateTime.now());
+            c.setCurrencyValues(currency, value);
+            return value;
         }
         catch (Exception e){
             throw new GetRateException("Error in getting coinMarketCap rate for " + requestedCoin, e);
