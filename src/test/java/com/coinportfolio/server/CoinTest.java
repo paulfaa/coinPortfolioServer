@@ -1,7 +1,7 @@
 package com.coinportfolio.server;
 
 import com.coinportfolio.server.enums.CoinIdEnum;
-import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.enums.CurrencyEnum;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Value;
 
@@ -22,16 +22,16 @@ public class CoinTest {
     @BeforeEach
     public void setup(){
         coin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
-        value = new Value(CurrenciesEnum.EUR, BigDecimal.valueOf(0.55), LocalDateTime.now());
+        value = new Value(CurrencyEnum.EUR, BigDecimal.valueOf(0.55), LocalDateTime.now());
     }
 
     @Test
     public void testGetValue(){
         //Arrange
-        coin.setValue(CurrenciesEnum.EUR, value);
+        coin.setValue(CurrencyEnum.EUR, value);
 
         //Act
-        BigDecimal value = coin.getValue(CurrenciesEnum.EUR);
+        BigDecimal value = coin.getValue(CurrencyEnum.EUR);
 
         //Assert
         Assertions.assertEquals(BigDecimal.valueOf(0.55), value);
@@ -42,18 +42,18 @@ public class CoinTest {
         //Assert
         assertThrows(NullPointerException.class,
                 () -> {
-                    coin.getValue(CurrenciesEnum.EUR);
+                    coin.getValue(CurrencyEnum.EUR);
         });
     }
 
     @Test
     public void testSetValueOverwritesPrevious(){
         Assertions.assertEquals(0, coin.getCurrencyValues().size());
-        coin.setValue(CurrenciesEnum.EUR, value);
+        coin.setValue(CurrencyEnum.EUR, value);
         Assertions.assertEquals(1, coin.getCurrencyValues().size());
 
-        Value newValue = new Value(CurrenciesEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
-        coin.setValue(CurrenciesEnum.EUR, newValue);
+        Value newValue = new Value(CurrencyEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
+        coin.setValue(CurrencyEnum.EUR, newValue);
         Assertions.assertEquals(1, coin.getCurrencyValues().size());
     }
 
@@ -61,8 +61,8 @@ public class CoinTest {
     public void testEquals() { //ensure equals method only looks at coin name
         //Arrange
         Coin otherBitcoin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
-        Value otherValue = new Value(CurrenciesEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
-        otherBitcoin.setValue(CurrenciesEnum.EUR, otherValue);
+        Value otherValue = new Value(CurrencyEnum.EUR, BigDecimal.valueOf(4.56), LocalDateTime.now());
+        otherBitcoin.setValue(CurrencyEnum.EUR, otherValue);
         Coin fakeCoin = new Coin(CoinIdEnum.DOGECOIN, "Dogecoin");
 
         //Assert

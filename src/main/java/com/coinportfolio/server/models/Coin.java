@@ -1,7 +1,7 @@
 package com.coinportfolio.server.models;
 
 import com.coinportfolio.server.enums.CoinIdEnum;
-import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.enums.CurrencyEnum;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
@@ -9,12 +9,12 @@ public class Coin {
     private CoinIdEnum id;
     private String name;
 
-    private HashMap<CurrenciesEnum, Value> currencyValues; // store value for this particular coin in different currencies
+    private HashMap<CurrencyEnum, Value> currencyValues; // store value for this particular coin in different currencies
 
     public Coin(CoinIdEnum id, String name) { //missing currencyValues in constructor
         this.id = id;
         this.name = name;
-        this.currencyValues = new HashMap<CurrenciesEnum, Value>();
+        this.currencyValues = new HashMap<CurrencyEnum, Value>();
     }
 
     public CoinIdEnum getId() {
@@ -29,11 +29,11 @@ public class Coin {
         this.name = name;
     }
 
-    public void setValue(CurrenciesEnum currencyTicker, Value value){
+    public void setValue(CurrencyEnum currencyTicker, Value value){
         currencyValues.put(currencyTicker, value);
     }
 
-    public BigDecimal getValue(CurrenciesEnum currencyTicker){
+    public BigDecimal getValue(CurrencyEnum currencyTicker){
         try{
             return currencyValues.get(currencyTicker).getValue();
         }
@@ -42,12 +42,12 @@ public class Coin {
         }
     }
 
-    public HashMap<CurrenciesEnum, Value> getCurrencyValues(){
+    public HashMap<CurrencyEnum, Value> getCurrencyValues(){
         return currencyValues;
     }
 
-    public void setCurrencyValues(CurrenciesEnum currenciesEnum, Value value){
-        currencyValues.put(currenciesEnum, value);
+    public void setCurrencyValues(CurrencyEnum currencyEnum, Value value){
+        currencyValues.put(currencyEnum, value);
     }
 
     @Override

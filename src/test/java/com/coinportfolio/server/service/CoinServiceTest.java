@@ -2,12 +2,11 @@ package com.coinportfolio.server.service;
 
 import com.coinportfolio.server.AllCoins;
 import com.coinportfolio.server.enums.CoinIdEnum;
-import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.enums.CurrencyEnum;
 import com.coinportfolio.server.exceptions.GetRateException;
 import com.coinportfolio.server.exceptions.ResponseJsonException;
 import com.coinportfolio.server.models.Coin;
 import com.coinportfolio.server.models.Value;
-import com.coinportfolio.server.service.CoinService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class CoinServiceTest {
     @Test
     public void testGetCoinmarketRateForCoin() throws ResponseJsonException {
         // Act
-        BigDecimal response = coinService.getCoinmarketRateForCoin("bitcoin", CurrenciesEnum.USD);
+        BigDecimal response = coinService.getCoinmarketRateForCoin("bitcoin", CurrencyEnum.USD);
 
         // Assert
         //value of response changes each time for testAPI server, just assert response is a bigDecimal
@@ -52,12 +51,12 @@ public class CoinServiceTest {
     @Test
     public void processRequestParams() {
         //Arrange
-        Map<String, CurrenciesEnum> request = new HashMap<>();
-        Value targetValue = new Value(CurrenciesEnum.USD, BigDecimal.valueOf(0123), LocalDateTime.now());
+        Map<String, CurrencyEnum> request = new HashMap<>();
+        Value targetValue = new Value(CurrencyEnum.USD, BigDecimal.valueOf(0123), LocalDateTime.now());
         assertEquals(0, allCoins.getLength());
 
         //Act
-        request.put("Bitcoin", CurrenciesEnum.USD);
+        request.put("Bitcoin", CurrencyEnum.USD);
         Value actualValue = null;
         try {
             actualValue = coinService.processRequestParams(request);
@@ -79,11 +78,11 @@ public class CoinServiceTest {
         // Arrange
         BigDecimal coinValue = BigDecimal.valueOf(50000);
         Coin coin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
-        Value value = new Value(CurrenciesEnum.USD, coinValue, LocalDateTime.now());
-        coin.setValue(CurrenciesEnum.USD, value);
+        Value value = new Value(CurrencyEnum.USD, coinValue, LocalDateTime.now());
+        coin.setValue(CurrencyEnum.USD, value);
         allCoins.addCoin(coin);
-        Map<String, CurrenciesEnum> request = new HashMap<>();
-        request.put("Bitcoin", CurrenciesEnum.USD);
+        Map<String, CurrencyEnum> request = new HashMap<>();
+        request.put("Bitcoin", CurrencyEnum.USD);
         assertEquals(1, allCoins.getLength());
 
         //Act
@@ -117,13 +116,13 @@ public class CoinServiceTest {
         BigDecimal coinValue = BigDecimal.valueOf(50000);
         LocalDateTime oldDate = LocalDateTime.of(2021,01,01, 11, 11);
         Coin coin = new Coin(CoinIdEnum.BITCOIN, "Bitcoin");
-        Value value = new Value(CurrenciesEnum.USD, coinValue, oldDate);
-        coin.setValue(CurrenciesEnum.USD, value);
+        Value value = new Value(CurrencyEnum.USD, coinValue, oldDate);
+        coin.setValue(CurrencyEnum.USD, value);
         allCoins.addCoin(coin);
-        Map<String, CurrenciesEnum> request = new HashMap<>();
-        request.put("Bitcoin", CurrenciesEnum.USD);
+        Map<String, CurrencyEnum> request = new HashMap<>();
+        request.put("Bitcoin", CurrencyEnum.USD);
         assertEquals(1, allCoins.getLength());
-        assertEquals(allCoins.getCoin(CoinIdEnum.BITCOIN).getCurrencyValues().get(CurrenciesEnum.USD).getUpdateDate(), oldDate);
+        assertEquals(allCoins.getCoin(CoinIdEnum.BITCOIN).getCurrencyValues().get(CurrencyEnum.USD).getUpdateDate(), oldDate);
 
         //Act
         Value actualValue = null;

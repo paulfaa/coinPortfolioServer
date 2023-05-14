@@ -1,15 +1,15 @@
 package com.coinportfolio.server.utils;
 
-import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.enums.CurrencyEnum;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StringToCurrencyEnumConverter implements Converter<String, CurrenciesEnum> {
+public class StringToCurrencyEnumConverter implements Converter<String, CurrencyEnum> {
     @Override
-    public CurrenciesEnum convert(String value) {
+    public CurrencyEnum convert(String value) {
         try{
-            return CurrenciesEnum.valueOf(value);
+            return CurrencyEnum.valueOf(value);
         }
         catch (Exception e){
             throw new IllegalArgumentException("Enum does not exist for: " + "value");

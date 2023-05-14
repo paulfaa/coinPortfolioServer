@@ -1,7 +1,6 @@
 package com.coinportfolio.server.utils;
 
-import com.coinportfolio.server.enums.CurrenciesEnum;
-import com.coinportfolio.server.utils.StringToCurrencyEnumConverter;
+import com.coinportfolio.server.enums.CurrencyEnum;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +11,8 @@ public class StringToCurrencyEnumConverterTest {
     @Test
     public void testConvertValidString(){
         converter = new StringToCurrencyEnumConverter();
-        CurrenciesEnum validResponse = converter.convert("EUR");
-        Assertions.assertEquals(CurrenciesEnum.EUR, validResponse);
+        CurrencyEnum validResponse = converter.convert("EUR");
+        Assertions.assertEquals(CurrencyEnum.EUR, validResponse);
     }
 
     @Test

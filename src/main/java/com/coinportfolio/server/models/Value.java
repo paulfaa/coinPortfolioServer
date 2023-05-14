@@ -1,7 +1,7 @@
 package com.coinportfolio.server.models;
 
 import com.coinportfolio.server.enums.CoinIdEnum;
-import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.enums.CurrencyEnum;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,11 +10,11 @@ import java.time.temporal.ChronoUnit;
 public class Value {
 
     private CoinIdEnum id;
-    private CurrenciesEnum currency;
+    private CurrencyEnum currency;
     private BigDecimal value;
     private LocalDateTime updateDate;
 
-    public Value(CurrenciesEnum currency, BigDecimal value, LocalDateTime localDateTime) {
+    public Value(CurrencyEnum currency, BigDecimal value, LocalDateTime localDateTime) {
         this.currency = currency;
         this.value = value;
         this.updateDate = localDateTime;

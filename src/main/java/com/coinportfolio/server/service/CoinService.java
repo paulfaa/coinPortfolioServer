@@ -2,7 +2,7 @@ package com.coinportfolio.server.service;
 
 import com.coinportfolio.server.AllCoins;
 import com.coinportfolio.server.enums.CoinIdEnum;
-import com.coinportfolio.server.enums.CurrenciesEnum;
+import com.coinportfolio.server.enums.CurrencyEnum;
 import com.coinportfolio.server.exceptions.GetRateException;
 import com.coinportfolio.server.exceptions.ResponseJsonException;
 import com.coinportfolio.server.models.Coin;
@@ -50,15 +50,15 @@ public class CoinService {
     private static final String DEFAULT_QUOTE_REQUEST = "https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=";
     private static final int DEFAULT_REQUEST_COOLDOWN = 3600;
 
-    public Value processRequestParams(Map<String, CurrenciesEnum> query) throws GetRateException {
+    public Value processRequestParams(Map<String, CurrencyEnum> query) throws GetRateException {
         String requestedCoin = query.keySet().stream().findFirst().get();
         CoinIdEnum coinId = CoinIdEnum.getEnumFromId(CoinNameToCoinmarketId.convertNameToInt(requestedCoin));
         if (!allCoins.checkIfListContainsCoin(coinId)){
             allCoins.addCoin(new Coin(coinId, CoinNameToCoinmarketId.convertIdToName(coinId.getId())));
         }
-        CurrenciesEnum currency = query.values().stream().findFirst().get();
+        CurrencyEnum currency = query.values().stream().findFirst().get();
         Coin c = allCoins.getCoin(coinId);
-        HashMap<CurrenciesEnum, Value> rates = c.getCurrencyValues();
+        HashMap<CurrencyEnum, Value> rates = c.getCurrencyValues();
         //if recent rate for this currency already exists, return it
         if (rates.containsKey(currency) && LocalDateTime.now().getHour() <= rates.get(currency).getUpdateDate().getHour() ){
             return rates.get(currency);
@@ -74,14 +74,14 @@ public class CoinService {
         }
     }
 
-    public BigDecimal getCoinmarketRateForCoin(String coinName, CurrenciesEnum currency) throws ResponseJsonException {
+    public BigDecimal getCoinmarketRateForCoin(String coinName, CurrencyEnum currency) throws ResponseJsonException {
         int coinId = CoinNameToCoinmarketId.convertNameToInt(coinName.toUpperCase(Locale.ROOT));
         String response = Objects.requireNonNull(restTemplate.getForObject(DEFAULT_QUOTE_REQUEST + coinId + "&convert=" + currency.toString(),
                 String.class));
         return getPriceFromResponse(response);
     }
 
-    public BigDecimal getCoinmarketRateForCoin(int coinId, CurrenciesEnum currency) throws ResponseJsonException {
+    public BigDecimal getCoinmarketRateForCoin(int coinId, CurrencyEnum currency) throws ResponseJsonException {
         String response = Objects.requireNonNull(restTemplate.getForObject(DEFAULT_QUOTE_REQUEST + coinId + "&convert=" + currency.toString(),
                 String.class));
         return getPriceFromResponse(response);

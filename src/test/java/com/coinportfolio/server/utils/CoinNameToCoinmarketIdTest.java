@@ -1,6 +1,5 @@
 package com.coinportfolio.server.utils;
 
-import com.coinportfolio.server.utils.CoinNameToCoinmarketId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
