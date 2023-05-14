@@ -2,8 +2,6 @@ package com.coinportfolio.server.models;
 
 import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrencyEnum;
-import com.coinportfolio.server.models.Coin;
-import com.coinportfolio.server.models.Value;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -19,4 +19,6 @@ public interface ValueService {
     Optional<Value> findByIdAndCurrency(CoinIdEnum id, CurrencyEnum currency);
 
     void deleteValue(CoinIdEnum id);
+
+    void deleteAllValues();
 }

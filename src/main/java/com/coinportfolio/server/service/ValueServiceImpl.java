@@ -20,7 +20,7 @@ public class ValueServiceImpl implements ValueService {
 
     @Override
     public Iterable<Value> getAllValues() {
-        return null;
+        return valueRepository.findAll();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class ValueServiceImpl implements ValueService {
         Optional<Value> result = valueRepository.findByIdAndCurrency(id, currency);
         if(result.isEmpty()){
             //try call api and populate db with new row, and return result
-            Value dummyValue = new Value(currency, new BigDecimal(1), LocalDateTime.now());
+            Value dummyValue = new Value(currency, new BigDecimal(123), LocalDateTime.now());
             valueRepository.save(dummyValue);
             return dummyValue;
         }
@@ -40,7 +40,7 @@ public class ValueServiceImpl implements ValueService {
             }
             else {
                 //rate is too old - try update stored rate in db, and return result
-                Value dummyValue = new Value(currency, new BigDecimal(1), LocalDateTime.now());
+                Value dummyValue = new Value(currency, new BigDecimal(456), LocalDateTime.now());
                 valueRepository.save(dummyValue);
                 return dummyValue;
             }
@@ -65,5 +65,10 @@ public class ValueServiceImpl implements ValueService {
     @Override
     public void deleteValue(CoinIdEnum id) {
 
+    }
+
+    @Override
+    public void deleteAllValues() {
+        valueRepository.deleteAll();
     }
 }
