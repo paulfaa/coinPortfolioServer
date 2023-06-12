@@ -2,7 +2,9 @@ package com.coinportfolio.server.service;
 
 import com.coinportfolio.server.enums.CoinIdEnum;
 import com.coinportfolio.server.enums.CurrencyEnum;
+import com.coinportfolio.server.models.GetValueRequest;
 import com.coinportfolio.server.models.Value;
+import org.springframework.http.HttpHeaders;
 
 import java.util.Optional;
 
@@ -10,7 +12,7 @@ public interface ValueService {
 
     Iterable<Value> getAllValues();
 
-    Value getValueByIdAndCurrency(CoinIdEnum id, CurrencyEnum currency);
+    Value getValue(HttpHeaders httpHeaders, GetValueRequest getValueRequest);
 
     Value saveValue(Value value);
 
@@ -18,7 +20,7 @@ public interface ValueService {
 
     Optional<Value> findByIdAndCurrency(CoinIdEnum id, CurrencyEnum currency);
 
-    void deleteValue(CoinIdEnum id);
+    void deleteValue(CoinIdEnum id, CurrencyEnum currency);
 
     void deleteAllValues();
 }
